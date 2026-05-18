@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowDownUp, ArrowLeft, Plus, Search, AlertTriangle, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ const fmtVND = (n: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(n);
 
 function LeadsPage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [source, setSource] = useState(ANY);
   const [purchase, setPurchase] = useState(ANY);
@@ -163,7 +164,7 @@ function LeadsPage() {
                 return (
                   <TableRow
                     key={l.id}
-                    onClick={() => alert(`Open lead ${l.id} — ${l.name}`)}
+                    onClick={() => navigate({ to: "/leads/$leadId", params: { leadId: l.id } })}
                     className={cn("cursor-pointer", d.high && "bg-destructive/5 hover:bg-destructive/10")}
                   >
                     <TableCell className="pl-4">

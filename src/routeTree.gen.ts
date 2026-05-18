@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LeadsIndexRouteImport } from './routes/leads.index'
 import { Route as LeadsCreateRouteImport } from './routes/leads.create'
+import { Route as LeadsLeadIdRouteImport } from './routes/leads.$leadId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,42 @@ const LeadsCreateRoute = LeadsCreateRouteImport.update({
   path: '/leads/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LeadsLeadIdRoute = LeadsLeadIdRouteImport.update({
+  id: '/leads/$leadId',
+  path: '/leads/$leadId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
   '/leads': typeof LeadsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/leads/create' | '/leads/'
+  fullPaths: '/' | '/leads/$leadId' | '/leads/create' | '/leads/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/leads/create' | '/leads'
-  id: '__root__' | '/' | '/leads/create' | '/leads/'
+  to: '/' | '/leads/$leadId' | '/leads/create' | '/leads'
+  id: '__root__' | '/' | '/leads/$leadId' | '/leads/create' | '/leads/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LeadsLeadIdRoute: typeof LeadsLeadIdRoute
   LeadsCreateRoute: typeof LeadsCreateRoute
   LeadsIndexRoute: typeof LeadsIndexRoute
 }
@@ -82,11 +92,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeadsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/leads/$leadId': {
+      id: '/leads/$leadId'
+      path: '/leads/$leadId'
+      fullPath: '/leads/$leadId'
+      preLoaderRoute: typeof LeadsLeadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LeadsLeadIdRoute: LeadsLeadIdRoute,
   LeadsCreateRoute: LeadsCreateRoute,
   LeadsIndexRoute: LeadsIndexRoute,
 }
