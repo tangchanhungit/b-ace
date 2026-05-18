@@ -1,3 +1,12 @@
+export type ActivityType = "call" | "meeting" | "note" | "task";
+
+export type Activity = {
+  id: string;
+  type: ActivityType;
+  content: string;
+  created_at: string; // ISO date
+};
+
 export type Lead = {
   id: string;
   name: string;
@@ -7,6 +16,7 @@ export type Lead = {
   last_touch: string; // ISO date
   next_action: string;
   tags: string[];
+  activities: Activity[];
 };
 
 const daysAgo = (n: number) => {
