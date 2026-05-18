@@ -30,6 +30,7 @@ const fmtVND = (n: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(n);
 
 function LeadsPage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [source, setSource] = useState(ANY);
   const [purchase, setPurchase] = useState(ANY);
