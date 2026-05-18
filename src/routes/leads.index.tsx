@@ -164,7 +164,7 @@ function LeadsPage() {
                 return (
                   <TableRow
                     key={l.id}
-                    onClick={() => alert(`Open lead ${l.id} — ${l.name}`)}
+                    onClick={() => navigate({ to: "/leads/$leadId", params: { leadId: l.id } })}
                     className={cn("cursor-pointer", d.high && "bg-destructive/5 hover:bg-destructive/10")}
                   >
                     <TableCell className="pl-4">
