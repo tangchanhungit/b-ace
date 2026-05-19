@@ -108,25 +108,21 @@ function LeadDetailPage() {
   );
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to="/leads"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link>
-            <div>
-              <div className="text-xs text-muted-foreground">Lead · {lead.id}</div>
-              <div className="text-sm font-medium">{lead.name}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+    <>
+      <PageHeader
+        title={lead.name}
+        breadcrumb={<><Link to="/leads" className="hover:text-foreground">Leads</Link> <span className="px-1">/</span> {lead.id}</>}
+        description={lead.phone}
+        actions={
+          <>
             <Button variant="outline" size="sm" className="gap-2"><Phone className="h-3.5 w-3.5" /> Call</Button>
             <Button variant="outline" size="sm" className="gap-2"><Mail className="h-3.5 w-3.5" /> Email</Button>
             <Button size="sm" onClick={() => navigate({ to: "/leads" })}>Save</Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
-      <main className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-10 gap-6">
+      <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-10 gap-6">
         {/* LEFT 70% */}
         <section className="lg:col-span-7 space-y-6">
           {/* Header card */}
