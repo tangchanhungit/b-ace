@@ -91,7 +91,7 @@ function CreateLeadPage() {
   const [note, setNote] = useState("");
 
   const tags = useMemo(() => {
-    const t: string[] = [];
+    const t: string[] = [customerType];
     if (source) t.push(source);
     if (intent) t.push(intent);
     if (entry) t.push(entry);
@@ -99,7 +99,7 @@ function CreateLeadPage() {
     if (purchase) t.push(purchase);
     if (tier) t.push(tier);
     return t;
-  }, [source, intent, entry, pcthBranch, purchase, tier]);
+  }, [customerType, source, intent, entry, pcthBranch, purchase, tier]);
 
   const requireReason = purchase === "khong_mua" || purchase === "ngung_mua";
 
