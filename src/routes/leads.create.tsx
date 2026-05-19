@@ -104,6 +104,7 @@ function CreateLeadPage() {
   const requireReason = purchase === "khong_mua" || purchase === "ngung_mua";
 
   const handleSave = () => {
+    if (customerType === "company" && !companyName.trim()) return toast.error("Nhập Company Name");
     if (!name.trim()) return toast.error("Vui lòng nhập họ tên");
     if (!/^[0-9+\-\s]{6,20}$/.test(phone.trim())) return toast.error("SĐT không hợp lệ");
     if (!source) return toast.error("Chọn Lead Source");
@@ -115,38 +116,75 @@ function CreateLeadPage() {
     if (!tier) return toast.error("Chọn Customer Tier");
 
     toast.success("Lead đã được tạo", { description: `Tags: ${tags.join(", ")}` });
-    setTimeout(() => navigate({ to: "/" }), 800);
+    setTimeout(() => navigate({ to: "/leads" }), 800);
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/60 backdrop-blur sticky top-0 z-10">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              <ArrowLeft className="h-4 w-4" /> Lead List
-            </Link>
-            <span className="text-muted-foreground/40">/</span>
-            <h1 className="text-base font-semibold">Create Lead</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => navigate({ to: "/" })}>Cancel</Button>
+    <>
+      <PageHeader
+        title="Create Lead"
+        breadcrumb={<><Link to="/leads" className="hover:text-foreground">Leads</Link> <span className="px-1">/</span> New</>}
+        description="Mỗi lựa chọn sẽ tự động gán tag để hệ thống chạy đúng workflow, journey & script bán hàng."
+        actions={
+          <>
+            <Button variant="ghost" onClick={() => navigate({ to: "/leads" })}>Cancel</Button>
             <Button onClick={handleSave} className="gap-2"><Save className="h-4 w-4" /> Save Lead</Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold tracking-tight">Tạo Lead mới</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Mỗi lựa chọn dưới đây sẽ tự động gán <span className="font-medium text-foreground">tag</span> để hệ thống chạy đúng workflow, journey & script bán hàng.
-          </p>
-        </div>
-
+      <div className="mx-auto max-w-7xl px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* LEFT — 2 columns of sections */}
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Section 0 — Customer type switch */}
+            <SectionCard
+              index="00"
+              icon={<User className="h-4 w-4" />}
+              title="Customer Type"
+              subtitle="Cá nhân hay Doanh nghiệp — gán tag individual/company"
+              className="md:col-span-2"
+            >
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { v: "individual", label: "Individual", icon: <UserCircle className="h-4 w-4" /> },
+                  { v: "company", label: "Company", icon: <Building2 className="h-4 w-4" /> },
+                ].map((o) => {
+                  const active = customerType === o.v;
+                  return (
+                    <button
+                      key={o.v}
+                      type="button"
+                      onClick={() => setCustomerType(o.v as "individual" | "company")}
+                      className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all
+                        ${active ? "border-primary bg-primary/10 text-foreground" : "border-border bg-card hover:border-primary/40 text-muted-foreground hover:text-foreground"}`}
+                    >
+                      {o.icon} {o.label}
+                    </button>
+                  );
+                })}
+              </div>
+              {customerType === "company" && (
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3">
+                  <div className="md:col-span-2">
+                    <Label className="text-xs">Company Name <span className="text-destructive">*</span></Label>
+                    <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="ACME JSC" className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Tax Code</Label>
+                    <Input value={taxCode} onChange={(e) => setTaxCode(e.target.value)} placeholder="0312345678" className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Industry</Label>
+                    <Input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="F&B, Retail…" className="mt-1.5" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-xs">Job Title</Label>
+                    <Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Owner, Manager…" className="mt-1.5" />
+                  </div>
+                </div>
+              )}
+            </SectionCard>
             {/* Section 1 */}
             <SectionCard
               index="01"
