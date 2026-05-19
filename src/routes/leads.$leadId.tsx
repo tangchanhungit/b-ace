@@ -316,7 +316,7 @@ function LeadDetailPage() {
             </CardContent>
           </Card>
         </aside>
-      </main>
+      </div>
     </>
   );
 }
