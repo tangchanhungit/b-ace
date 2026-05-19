@@ -216,8 +216,8 @@ function LeadsPage() {
             </TableBody>
           </Table>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
 
