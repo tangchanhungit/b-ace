@@ -9,11 +9,122 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TicketsRouteImport } from './routes/tickets'
+import { Route as TeamsRouteImport } from './routes/teams'
+import { Route as SupportFaqRouteImport } from './routes/support-faq'
+import { Route as ServiceContractsRouteImport } from './routes/service-contracts'
+import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as SalesOrdersRouteImport } from './routes/sales-orders'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as QuotesRouteImport } from './routes/quotes'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as ProjectTasksRouteImport } from './routes/project-tasks'
+import { Route as ProductsRouteImport } from './routes/products'
+import { Route as OrganizationsRouteImport } from './routes/organizations'
+import { Route as OpportunitiesRouteImport } from './routes/opportunities'
+import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as ContactsRouteImport } from './routes/contacts'
+import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LeadsIndexRouteImport } from './routes/leads.index'
 import { Route as LeadsCreateRouteImport } from './routes/leads.create'
 import { Route as LeadsLeadIdRouteImport } from './routes/leads.$leadId'
+import { Route as InventoryStorageRouteImport } from './routes/inventory.storage'
+import { Route as InventoryOutboundRouteImport } from './routes/inventory.outbound'
+import { Route as InventoryInboundRouteImport } from './routes/inventory.inbound'
 
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamsRoute = TeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportFaqRoute = SupportFaqRouteImport.update({
+  id: '/support-faq',
+  path: '/support-faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceContractsRoute = ServiceContractsRouteImport.update({
+  id: '/service-contracts',
+  path: '/service-contracts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScheduleRoute = ScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalesOrdersRoute = SalesOrdersRouteImport.update({
+  id: '/sales-orders',
+  path: '/sales-orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuotesRoute = QuotesRouteImport.update({
+  id: '/quotes',
+  path: '/quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectTasksRoute = ProjectTasksRouteImport.update({
+  id: '/project-tasks',
+  path: '/project-tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizationsRoute = OrganizationsRouteImport.update({
+  id: '/organizations',
+  path: '/organizations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesRoute = OpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactsRoute = ContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivitiesRoute = ActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -34,15 +145,72 @@ const LeadsLeadIdRoute = LeadsLeadIdRouteImport.update({
   path: '/leads/$leadId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InventoryStorageRoute = InventoryStorageRouteImport.update({
+  id: '/inventory/storage',
+  path: '/inventory/storage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryOutboundRoute = InventoryOutboundRouteImport.update({
+  id: '/inventory/outbound',
+  path: '/inventory/outbound',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryInboundRoute = InventoryInboundRouteImport.update({
+  id: '/inventory/inbound',
+  path: '/inventory/inbound',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/calendar': typeof CalendarRoute
+  '/contacts': typeof ContactsRoute
+  '/documents': typeof DocumentsRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/organizations': typeof OrganizationsRoute
+  '/products': typeof ProductsRoute
+  '/project-tasks': typeof ProjectTasksRoute
+  '/projects': typeof ProjectsRoute
+  '/quotes': typeof QuotesRoute
+  '/reports': typeof ReportsRoute
+  '/rules': typeof RulesRoute
+  '/sales-orders': typeof SalesOrdersRoute
+  '/schedule': typeof ScheduleRoute
+  '/service-contracts': typeof ServiceContractsRoute
+  '/support-faq': typeof SupportFaqRoute
+  '/teams': typeof TeamsRoute
+  '/tickets': typeof TicketsRoute
+  '/inventory/inbound': typeof InventoryInboundRoute
+  '/inventory/outbound': typeof InventoryOutboundRoute
+  '/inventory/storage': typeof InventoryStorageRoute
   '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/calendar': typeof CalendarRoute
+  '/contacts': typeof ContactsRoute
+  '/documents': typeof DocumentsRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/organizations': typeof OrganizationsRoute
+  '/products': typeof ProductsRoute
+  '/project-tasks': typeof ProjectTasksRoute
+  '/projects': typeof ProjectsRoute
+  '/quotes': typeof QuotesRoute
+  '/reports': typeof ReportsRoute
+  '/rules': typeof RulesRoute
+  '/sales-orders': typeof SalesOrdersRoute
+  '/schedule': typeof ScheduleRoute
+  '/service-contracts': typeof ServiceContractsRoute
+  '/support-faq': typeof SupportFaqRoute
+  '/teams': typeof TeamsRoute
+  '/tickets': typeof TicketsRoute
+  '/inventory/inbound': typeof InventoryInboundRoute
+  '/inventory/outbound': typeof InventoryOutboundRoute
+  '/inventory/storage': typeof InventoryStorageRoute
   '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
   '/leads': typeof LeadsIndexRoute
@@ -50,20 +218,138 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/calendar': typeof CalendarRoute
+  '/contacts': typeof ContactsRoute
+  '/documents': typeof DocumentsRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/organizations': typeof OrganizationsRoute
+  '/products': typeof ProductsRoute
+  '/project-tasks': typeof ProjectTasksRoute
+  '/projects': typeof ProjectsRoute
+  '/quotes': typeof QuotesRoute
+  '/reports': typeof ReportsRoute
+  '/rules': typeof RulesRoute
+  '/sales-orders': typeof SalesOrdersRoute
+  '/schedule': typeof ScheduleRoute
+  '/service-contracts': typeof ServiceContractsRoute
+  '/support-faq': typeof SupportFaqRoute
+  '/teams': typeof TeamsRoute
+  '/tickets': typeof TicketsRoute
+  '/inventory/inbound': typeof InventoryInboundRoute
+  '/inventory/outbound': typeof InventoryOutboundRoute
+  '/inventory/storage': typeof InventoryStorageRoute
   '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/leads/$leadId' | '/leads/create' | '/leads/'
+  fullPaths:
+    | '/'
+    | '/activities'
+    | '/calendar'
+    | '/contacts'
+    | '/documents'
+    | '/opportunities'
+    | '/organizations'
+    | '/products'
+    | '/project-tasks'
+    | '/projects'
+    | '/quotes'
+    | '/reports'
+    | '/rules'
+    | '/sales-orders'
+    | '/schedule'
+    | '/service-contracts'
+    | '/support-faq'
+    | '/teams'
+    | '/tickets'
+    | '/inventory/inbound'
+    | '/inventory/outbound'
+    | '/inventory/storage'
+    | '/leads/$leadId'
+    | '/leads/create'
+    | '/leads/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/leads/$leadId' | '/leads/create' | '/leads'
-  id: '__root__' | '/' | '/leads/$leadId' | '/leads/create' | '/leads/'
+  to:
+    | '/'
+    | '/activities'
+    | '/calendar'
+    | '/contacts'
+    | '/documents'
+    | '/opportunities'
+    | '/organizations'
+    | '/products'
+    | '/project-tasks'
+    | '/projects'
+    | '/quotes'
+    | '/reports'
+    | '/rules'
+    | '/sales-orders'
+    | '/schedule'
+    | '/service-contracts'
+    | '/support-faq'
+    | '/teams'
+    | '/tickets'
+    | '/inventory/inbound'
+    | '/inventory/outbound'
+    | '/inventory/storage'
+    | '/leads/$leadId'
+    | '/leads/create'
+    | '/leads'
+  id:
+    | '__root__'
+    | '/'
+    | '/activities'
+    | '/calendar'
+    | '/contacts'
+    | '/documents'
+    | '/opportunities'
+    | '/organizations'
+    | '/products'
+    | '/project-tasks'
+    | '/projects'
+    | '/quotes'
+    | '/reports'
+    | '/rules'
+    | '/sales-orders'
+    | '/schedule'
+    | '/service-contracts'
+    | '/support-faq'
+    | '/teams'
+    | '/tickets'
+    | '/inventory/inbound'
+    | '/inventory/outbound'
+    | '/inventory/storage'
+    | '/leads/$leadId'
+    | '/leads/create'
+    | '/leads/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesRoute: typeof ActivitiesRoute
+  CalendarRoute: typeof CalendarRoute
+  ContactsRoute: typeof ContactsRoute
+  DocumentsRoute: typeof DocumentsRoute
+  OpportunitiesRoute: typeof OpportunitiesRoute
+  OrganizationsRoute: typeof OrganizationsRoute
+  ProductsRoute: typeof ProductsRoute
+  ProjectTasksRoute: typeof ProjectTasksRoute
+  ProjectsRoute: typeof ProjectsRoute
+  QuotesRoute: typeof QuotesRoute
+  ReportsRoute: typeof ReportsRoute
+  RulesRoute: typeof RulesRoute
+  SalesOrdersRoute: typeof SalesOrdersRoute
+  ScheduleRoute: typeof ScheduleRoute
+  ServiceContractsRoute: typeof ServiceContractsRoute
+  SupportFaqRoute: typeof SupportFaqRoute
+  TeamsRoute: typeof TeamsRoute
+  TicketsRoute: typeof TicketsRoute
+  InventoryInboundRoute: typeof InventoryInboundRoute
+  InventoryOutboundRoute: typeof InventoryOutboundRoute
+  InventoryStorageRoute: typeof InventoryStorageRoute
   LeadsLeadIdRoute: typeof LeadsLeadIdRoute
   LeadsCreateRoute: typeof LeadsCreateRoute
   LeadsIndexRoute: typeof LeadsIndexRoute
@@ -71,6 +357,132 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teams': {
+      id: '/teams'
+      path: '/teams'
+      fullPath: '/teams'
+      preLoaderRoute: typeof TeamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support-faq': {
+      id: '/support-faq'
+      path: '/support-faq'
+      fullPath: '/support-faq'
+      preLoaderRoute: typeof SupportFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-contracts': {
+      id: '/service-contracts'
+      path: '/service-contracts'
+      fullPath: '/service-contracts'
+      preLoaderRoute: typeof ServiceContractsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schedule': {
+      id: '/schedule'
+      path: '/schedule'
+      fullPath: '/schedule'
+      preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sales-orders': {
+      id: '/sales-orders'
+      path: '/sales-orders'
+      fullPath: '/sales-orders'
+      preLoaderRoute: typeof SalesOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quotes': {
+      id: '/quotes'
+      path: '/quotes'
+      fullPath: '/quotes'
+      preLoaderRoute: typeof QuotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/project-tasks': {
+      id: '/project-tasks'
+      path: '/project-tasks'
+      fullPath: '/project-tasks'
+      preLoaderRoute: typeof ProjectTasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organizations': {
+      id: '/organizations'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof OrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacts': {
+      id: '/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof ContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -99,11 +511,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeadsLeadIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inventory/storage': {
+      id: '/inventory/storage'
+      path: '/inventory/storage'
+      fullPath: '/inventory/storage'
+      preLoaderRoute: typeof InventoryStorageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory/outbound': {
+      id: '/inventory/outbound'
+      path: '/inventory/outbound'
+      fullPath: '/inventory/outbound'
+      preLoaderRoute: typeof InventoryOutboundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory/inbound': {
+      id: '/inventory/inbound'
+      path: '/inventory/inbound'
+      fullPath: '/inventory/inbound'
+      preLoaderRoute: typeof InventoryInboundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesRoute: ActivitiesRoute,
+  CalendarRoute: CalendarRoute,
+  ContactsRoute: ContactsRoute,
+  DocumentsRoute: DocumentsRoute,
+  OpportunitiesRoute: OpportunitiesRoute,
+  OrganizationsRoute: OrganizationsRoute,
+  ProductsRoute: ProductsRoute,
+  ProjectTasksRoute: ProjectTasksRoute,
+  ProjectsRoute: ProjectsRoute,
+  QuotesRoute: QuotesRoute,
+  ReportsRoute: ReportsRoute,
+  RulesRoute: RulesRoute,
+  SalesOrdersRoute: SalesOrdersRoute,
+  ScheduleRoute: ScheduleRoute,
+  ServiceContractsRoute: ServiceContractsRoute,
+  SupportFaqRoute: SupportFaqRoute,
+  TeamsRoute: TeamsRoute,
+  TicketsRoute: TicketsRoute,
+  InventoryInboundRoute: InventoryInboundRoute,
+  InventoryOutboundRoute: InventoryOutboundRoute,
+  InventoryStorageRoute: InventoryStorageRoute,
   LeadsLeadIdRoute: LeadsLeadIdRoute,
   LeadsCreateRoute: LeadsCreateRoute,
   LeadsIndexRoute: LeadsIndexRoute,

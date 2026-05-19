@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowDownUp, ArrowLeft, Plus, Search, AlertTriangle, Flame } from "lucide-react";
+import { ArrowDownUp, Plus, Search, AlertTriangle, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { MOCK_LEADS, type Lead } from "@/lib/leads-mock";
 import { derive, daysSince, type LeadTier } from "@/lib/leads-logic";
+import { PageHeader } from "@/components/app-shell";
 
 export const Route = createFileRoute("/leads/")({
   component: LeadsPage,
@@ -80,32 +81,27 @@ function LeadsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to="/"><Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button></Link>
-            <div>
-              <h1 className="text-lg font-semibold">All Leads</h1>
-              <p className="text-xs text-muted-foreground">Tag-driven segmentation · {rows.length} of {MOCK_LEADS.length}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+    <>
+      <PageHeader
+        title="All Leads"
+        description={`Tag-driven segmentation · ${rows.length} of ${MOCK_LEADS.length}`}
+        actions={
+          <>
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search name or phone…"
-                className="pl-8 w-72"
+                className="pl-8 w-64"
               />
             </div>
             <Link to="/leads/create"><Button className="gap-2"><Plus className="h-4 w-4" /> Create Lead</Button></Link>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
-      <main className="mx-auto max-w-7xl px-6 py-6 space-y-4">
+      <div className="mx-auto max-w-7xl px-6 py-6 space-y-4">
         {/* Filter bar */}
         <div className="rounded-xl border bg-card p-3 flex flex-wrap items-center gap-2">
           <FilterSelect label="Source" value={source} onChange={setSource} options={[
@@ -220,8 +216,8 @@ function LeadsPage() {
             </TableBody>
           </Table>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
 
