@@ -363,8 +363,8 @@ function CreateLeadPage() {
             </div>
           </aside>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
 
