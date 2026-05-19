@@ -10,7 +10,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, Tags, Save, User, Target, Route as RouteIcon, ShoppingBag, Crown, Facebook, Music2, Globe, MessageCircle, MoreHorizontal } from "lucide-react";
+import { Tags, Save, User, Target, Route as RouteIcon, ShoppingBag, Crown, Facebook, Music2, Globe, MessageCircle, MoreHorizontal, Building2, UserCircle } from "lucide-react";
+import { PageHeader } from "@/components/app-shell";
 
 export const Route = createFileRoute("/leads/create")({
   component: CreateLeadPage,
