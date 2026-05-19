@@ -72,6 +72,11 @@ const tierOptions: { value: TierVal; label: string; ring: string }[] = [
 
 function CreateLeadPage() {
   const navigate = useNavigate();
+  const [customerType, setCustomerType] = useState<"individual" | "company">("individual");
+  const [companyName, setCompanyName] = useState("");
+  const [taxCode, setTaxCode] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [industry, setIndustry] = useState("");
   const [source, setSource] = useState<SourceVal | "">("");
   const [intent, setIntent] = useState<IntentVal | "">("");
   const [entry, setEntry] = useState<EntryVal | "">("");
@@ -82,6 +87,7 @@ function CreateLeadPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [owner, setOwner] = useState("Linh");
   const [note, setNote] = useState("");
 
   const tags = useMemo(() => {
