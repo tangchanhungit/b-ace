@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowDownUp, ArrowLeft, Plus, Search, AlertTriangle, Flame } from "lucide-react";
+import { ArrowDownUp, Plus, Search, AlertTriangle, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import { MOCK_LEADS, type Lead } from "@/lib/leads-mock";
 import { derive, daysSince, type LeadTier } from "@/lib/leads-logic";
+import { PageHeader } from "@/components/app-shell";
 
 export const Route = createFileRoute("/leads/")({
   component: LeadsPage,
