@@ -311,6 +311,15 @@ function CreateLeadPage() {
                   <Label htmlFor="email" className="text-xs">Email</Label>
                   <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@email.com" className="mt-1.5" />
                 </div>
+                <div>
+                  <Label htmlFor="owner" className="text-xs">Owner</Label>
+                  <Select value={owner} onValueChange={setOwner}>
+                    <SelectTrigger id="owner" className="mt-1.5"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {["Linh", "Minh", "Hà"].map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="md:col-span-2">
                   <Label htmlFor="note" className="text-xs">Ghi chú</Label>
                   <Textarea id="note" rows={3} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ghi chú nội bộ cho team sales..." className="mt-1.5" />
