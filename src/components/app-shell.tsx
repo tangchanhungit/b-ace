@@ -55,7 +55,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </DropdownMenu>
             </div>
           </header>
-          <main className="flex-1 min-w-0">{children}</main>
+          <div className="flex-1 min-w-0">{children}</div>
         </SidebarInset>
       </div>
     </SidebarProvider>
