@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  ArrowLeft, Phone, Mail, PhoneCall, StickyNote, CalendarDays, CheckSquare,
+  Phone, Mail, PhoneCall, StickyNote, CalendarDays, CheckSquare,
   Flame, AlertTriangle, X, Plus, Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { MOCK_LEADS, type Activity, type ActivityType, type Lead } from "@/lib/leads-mock";
 import { derive, daysSince, type LeadTier } from "@/lib/leads-logic";
+import { PageHeader } from "@/components/app-shell";
 
 export const Route = createFileRoute("/leads/$leadId")({
   component: LeadDetailPage,
