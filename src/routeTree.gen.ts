@@ -29,6 +29,7 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LeadsIndexRouteImport } from './routes/leads.index'
+import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
 import { Route as SalesOrdersOrderIdRouteImport } from './routes/sales-orders.$orderId'
 import { Route as QuotesQuoteIdRouteImport } from './routes/quotes.$quoteId'
 import { Route as OrganizationsOrgIdRouteImport } from './routes/organizations.$orgId'
@@ -139,6 +140,11 @@ const LeadsIndexRoute = LeadsIndexRouteImport.update({
   path: '/leads/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TicketsTicketIdRoute = TicketsTicketIdRouteImport.update({
+  id: '/$ticketId',
+  path: '/$ticketId',
+  getParentRoute: () => TicketsRoute,
+} as any)
 const SalesOrdersOrderIdRoute = SalesOrdersOrderIdRouteImport.update({
   id: '/$orderId',
   path: '/$orderId',
@@ -204,7 +210,7 @@ export interface FileRoutesByFullPath {
   '/service-contracts': typeof ServiceContractsRoute
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
-  '/tickets': typeof TicketsRoute
+  '/tickets': typeof TicketsRouteWithChildren
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/organizations/$orgId': typeof OrganizationsOrgIdRoute
   '/quotes/$quoteId': typeof QuotesQuoteIdRoute
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -235,7 +242,7 @@ export interface FileRoutesByTo {
   '/service-contracts': typeof ServiceContractsRoute
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
-  '/tickets': typeof TicketsRoute
+  '/tickets': typeof TicketsRouteWithChildren
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
@@ -245,6 +252,7 @@ export interface FileRoutesByTo {
   '/organizations/$orgId': typeof OrganizationsOrgIdRoute
   '/quotes/$quoteId': typeof QuotesQuoteIdRoute
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/leads': typeof LeadsIndexRoute
 }
 export interface FileRoutesById {
@@ -267,7 +275,7 @@ export interface FileRoutesById {
   '/service-contracts': typeof ServiceContractsRoute
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
-  '/tickets': typeof TicketsRoute
+  '/tickets': typeof TicketsRouteWithChildren
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/organizations/$orgId': typeof OrganizationsOrgIdRoute
   '/quotes/$quoteId': typeof QuotesQuoteIdRoute
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRouteTypes {
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
     | '/organizations/$orgId'
     | '/quotes/$quoteId'
     | '/sales-orders/$orderId'
+    | '/tickets/$ticketId'
     | '/leads/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/organizations/$orgId'
     | '/quotes/$quoteId'
     | '/sales-orders/$orderId'
+    | '/tickets/$ticketId'
     | '/leads'
   id:
     | '__root__'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/organizations/$orgId'
     | '/quotes/$quoteId'
     | '/sales-orders/$orderId'
+    | '/tickets/$ticketId'
     | '/leads/'
   fileRoutesById: FileRoutesById
 }
@@ -394,7 +406,7 @@ export interface RootRouteChildren {
   ServiceContractsRoute: typeof ServiceContractsRoute
   SupportFaqRoute: typeof SupportFaqRoute
   TeamsRoute: typeof TeamsRoute
-  TicketsRoute: typeof TicketsRoute
+  TicketsRoute: typeof TicketsRouteWithChildren
   InventoryInboundRoute: typeof InventoryInboundRoute
   InventoryOutboundRoute: typeof InventoryOutboundRoute
   InventoryStorageRoute: typeof InventoryStorageRoute
@@ -545,6 +557,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeadsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tickets/$ticketId': {
+      id: '/tickets/$ticketId'
+      path: '/$ticketId'
+      fullPath: '/tickets/$ticketId'
+      preLoaderRoute: typeof TicketsTicketIdRouteImport
+      parentRoute: typeof TicketsRoute
+    }
     '/sales-orders/$orderId': {
       id: '/sales-orders/$orderId'
       path: '/$orderId'
@@ -658,6 +677,17 @@ const SalesOrdersRouteWithChildren = SalesOrdersRoute._addFileChildren(
   SalesOrdersRouteChildren,
 )
 
+interface TicketsRouteChildren {
+  TicketsTicketIdRoute: typeof TicketsTicketIdRoute
+}
+
+const TicketsRouteChildren: TicketsRouteChildren = {
+  TicketsTicketIdRoute: TicketsTicketIdRoute,
+}
+
+const TicketsRouteWithChildren =
+  TicketsRoute._addFileChildren(TicketsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivitiesRoute: ActivitiesRoute,
@@ -677,7 +707,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServiceContractsRoute: ServiceContractsRoute,
   SupportFaqRoute: SupportFaqRoute,
   TeamsRoute: TeamsRoute,
-  TicketsRoute: TicketsRoute,
+  TicketsRoute: TicketsRouteWithChildren,
   InventoryInboundRoute: InventoryInboundRoute,
   InventoryOutboundRoute: InventoryOutboundRoute,
   InventoryStorageRoute: InventoryStorageRoute,

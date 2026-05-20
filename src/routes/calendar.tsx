@@ -41,7 +41,7 @@ function CalendarPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       {e.entityType && <Badge variant="outline">{e.entityType}</Badge>}
-                      {href && <Link to={href.to as any} params={href.params} className="text-xs text-primary">Open</Link>}
+                      {href && <Link to={href.to as any} params={href.params as any} className="text-xs text-primary">Open</Link>}
                     </div>
                   </div>
                 );
