@@ -221,7 +221,7 @@ function LeadDetailPage() {
             <CardHeader className="pb-3"><CardTitle className="text-sm">Lead info</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <Field label="Owner">
-                <Select value={lead.owner} onValueChange={(v) => setLead((l) => ({ ...l, owner: v }))}>
+                <Select value={lead.owner} onValueChange={(v) => setLead({ owner: v })}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {OWNERS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
@@ -232,7 +232,7 @@ function LeadDetailPage() {
                 <Input
                   type="number"
                   value={lead.value}
-                  onChange={(e) => setLead((l) => ({ ...l, value: Number(e.target.value) || 0 }))}
+                  onChange={(e) => setLead({ value: Number(e.target.value) || 0 })}
                 />
               </Field>
               <Field label="Last touch">
@@ -241,7 +241,7 @@ function LeadDetailPage() {
               <Field label="Next action">
                 <Input
                   value={lead.next_action}
-                  onChange={(e) => setLead((l) => ({ ...l, next_action: e.target.value }))}
+                  onChange={(e) => setLead({ next_action: e.target.value })}
                 />
               </Field>
             </CardContent>
