@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Flame, AlertTriangle, ArrowUpRight } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
-import { MOCK_LEADS } from "@/lib/leads-mock";
+import { useStore } from "@/lib/store";
 import { derive } from "@/lib/leads-logic";
 
 export const Route = createFileRoute("/")({
@@ -13,13 +13,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const total = MOCK_LEADS.length;
-  const derived = MOCK_LEADS.map((l) => ({ l, d: derive(l) }));
+  const leads = useStore((s) => s.leads);
+  const total = leads.length;
+  const derived = leads.map((l) => ({ l, d: derive(l) }));
   const high = derived.filter((x) => x.d.high).length;
   const stale = derived.filter((x) => x.d.stale).length;
   const gold = derived.filter((x) => x.d.tier === "Gold").length;
   const fmt = (n: number) => new Intl.NumberFormat("vi-VN").format(n);
-  const totalValue = MOCK_LEADS.reduce((s, l) => s + l.value, 0);
+  const totalValue = leads.reduce((s, l) => s + l.value, 0);
 
   return (
     <>
