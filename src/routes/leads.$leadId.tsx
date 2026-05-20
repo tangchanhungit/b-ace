@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { MOCK_LEADS, type Activity, type ActivityType, type Lead } from "@/lib/leads-mock";
+import { type Activity, type ActivityType, type Lead } from "@/lib/leads-mock";
+import { useStore, leadActions } from "@/lib/store";
 import { derive, daysSince, type LeadTier } from "@/lib/leads-logic";
 import { PageHeader } from "@/components/app-shell";
 
@@ -57,9 +58,19 @@ function activityColor(type: ActivityType) {
 function LeadDetailPage() {
   const { leadId } = Route.useParams();
   const navigate = useNavigate();
-  const initial = useMemo(() => MOCK_LEADS.find((l) => l.id === leadId), [leadId]);
+  const lead = useStore((s) => s.leads.find((l) => l.id === leadId));
 
-  if (!initial) {
+  const [composer, setComposer] = useState("");
+  const [tagInput, setTagInput] = useState("");
+
+  const d = useMemo(() => lead ? derive(lead) : null, [lead]);
+
+  const sortedActivities = useMemo(
+    () => lead ? [...lead.activities].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) : [],
+    [lead],
+  );
+
+  if (!lead || !d) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30">
         <Card className="max-w-md">
@@ -73,39 +84,22 @@ function LeadDetailPage() {
     );
   }
 
-  const [lead, setLead] = useState<Lead>(initial);
-  const [composer, setComposer] = useState("");
-  const [tagInput, setTagInput] = useState("");
-
-  const d = useMemo(() => derive(lead), [lead]);
-
   const addActivity = (type: ActivityType) => {
     const content = composer.trim();
     if (!content) return;
-    const a: Activity = {
-      id: `${lead.id}-a${Date.now()}`,
-      type,
-      content,
-      created_at: new Date().toISOString(),
-    };
-    setLead((l) => ({ ...l, activities: [a, ...l.activities], last_touch: a.created_at }));
+    leadActions.addActivity(lead.id, { type, content });
     setComposer("");
   };
 
   const addTag = () => {
     const t = tagInput.trim().toLowerCase().replace(/\s+/g, "_");
-    if (!t || lead.tags.includes(t)) { setTagInput(""); return; }
-    setLead((l) => ({ ...l, tags: [...l.tags, t] }));
+    if (!t) return;
+    leadActions.addTag(lead.id, t);
     setTagInput("");
   };
 
-  const removeTag = (t: string) =>
-    setLead((l) => ({ ...l, tags: l.tags.filter((x) => x !== t) }));
-
-  const sortedActivities = useMemo(
-    () => [...lead.activities].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
-    [lead.activities],
-  );
+  const removeTag = (t: string) => leadActions.removeTag(lead.id, t);
+  const setLead = (patch: Partial<Lead>) => leadActions.update(lead.id, patch);
 
   return (
     <>
@@ -227,7 +221,7 @@ function LeadDetailPage() {
             <CardHeader className="pb-3"><CardTitle className="text-sm">Lead info</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <Field label="Owner">
-                <Select value={lead.owner} onValueChange={(v) => setLead((l) => ({ ...l, owner: v }))}>
+                <Select value={lead.owner} onValueChange={(v) => setLead({ owner: v })}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {OWNERS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
@@ -238,7 +232,7 @@ function LeadDetailPage() {
                 <Input
                   type="number"
                   value={lead.value}
-                  onChange={(e) => setLead((l) => ({ ...l, value: Number(e.target.value) || 0 }))}
+                  onChange={(e) => setLead({ value: Number(e.target.value) || 0 })}
                 />
               </Field>
               <Field label="Last touch">
@@ -247,7 +241,7 @@ function LeadDetailPage() {
               <Field label="Next action">
                 <Input
                   value={lead.next_action}
-                  onChange={(e) => setLead((l) => ({ ...l, next_action: e.target.value }))}
+                  onChange={(e) => setLead({ next_action: e.target.value })}
                 />
               </Field>
             </CardContent>

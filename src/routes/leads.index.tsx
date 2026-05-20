@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { MOCK_LEADS, type Lead } from "@/lib/leads-mock";
+import { type Lead } from "@/lib/leads-mock";
+import { useStore } from "@/lib/store";
 import { derive, daysSince, type LeadTier } from "@/lib/leads-logic";
 import { PageHeader } from "@/components/app-shell";
 
@@ -42,14 +43,15 @@ function LeadsPage() {
   const [sortKey, setSortKey] = useState<SortKey>("last_touch");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
+  const leads = useStore((s) => s.leads);
   const owners = useMemo(
-    () => Array.from(new Set(MOCK_LEADS.map((l) => l.owner))).sort(),
-    [],
+    () => Array.from(new Set(leads.map((l) => l.owner))).sort(),
+    [leads],
   );
 
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
-    let list: Lead[] = MOCK_LEADS.filter((l) => {
+    let list: Lead[] = leads.filter((l) => {
       if (q && !l.name.toLowerCase().includes(q) && !l.phone.replace(/\s/g, "").includes(q.replace(/\s/g, ""))) return false;
       if (source !== ANY && !l.tags.includes(source)) return false;
       if (purchase !== ANY && !l.tags.includes(purchase)) return false;
@@ -68,7 +70,7 @@ function LeadsPage() {
       });
     }
     return list;
-  }, [search, source, purchase, tier, program, owner, staleOnly, sortKey, sortDir]);
+  }, [leads, search, source, purchase, tier, program, owner, staleOnly, sortKey, sortDir]);
 
   const toggleSort = (k: SortKey) => {
     if (sortKey === k) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -84,7 +86,7 @@ function LeadsPage() {
     <>
       <PageHeader
         title="All Leads"
-        description={`Tag-driven segmentation · ${rows.length} of ${MOCK_LEADS.length}`}
+        description={`Tag-driven segmentation · ${rows.length} of ${leads.length}`}
         actions={
           <>
             <div className="relative">

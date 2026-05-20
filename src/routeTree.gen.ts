@@ -29,6 +29,11 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LeadsIndexRouteImport } from './routes/leads.index'
+import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
+import { Route as SalesOrdersOrderIdRouteImport } from './routes/sales-orders.$orderId'
+import { Route as QuotesQuoteIdRouteImport } from './routes/quotes.$quoteId'
+import { Route as OrganizationsOrgIdRouteImport } from './routes/organizations.$orgId'
+import { Route as OpportunitiesOppIdRouteImport } from './routes/opportunities.$oppId'
 import { Route as LeadsCreateRouteImport } from './routes/leads.create'
 import { Route as LeadsLeadIdRouteImport } from './routes/leads.$leadId'
 import { Route as InventoryStorageRouteImport } from './routes/inventory.storage'
@@ -135,6 +140,31 @@ const LeadsIndexRoute = LeadsIndexRouteImport.update({
   path: '/leads/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TicketsTicketIdRoute = TicketsTicketIdRouteImport.update({
+  id: '/$ticketId',
+  path: '/$ticketId',
+  getParentRoute: () => TicketsRoute,
+} as any)
+const SalesOrdersOrderIdRoute = SalesOrdersOrderIdRouteImport.update({
+  id: '/$orderId',
+  path: '/$orderId',
+  getParentRoute: () => SalesOrdersRoute,
+} as any)
+const QuotesQuoteIdRoute = QuotesQuoteIdRouteImport.update({
+  id: '/$quoteId',
+  path: '/$quoteId',
+  getParentRoute: () => QuotesRoute,
+} as any)
+const OrganizationsOrgIdRoute = OrganizationsOrgIdRouteImport.update({
+  id: '/$orgId',
+  path: '/$orgId',
+  getParentRoute: () => OrganizationsRoute,
+} as any)
+const OpportunitiesOppIdRoute = OpportunitiesOppIdRouteImport.update({
+  id: '/$oppId',
+  path: '/$oppId',
+  getParentRoute: () => OpportunitiesRoute,
+} as any)
 const LeadsCreateRoute = LeadsCreateRouteImport.update({
   id: '/leads/create',
   path: '/leads/create',
@@ -167,25 +197,30 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof CalendarRoute
   '/contacts': typeof ContactsRoute
   '/documents': typeof DocumentsRoute
-  '/opportunities': typeof OpportunitiesRoute
-  '/organizations': typeof OrganizationsRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/organizations': typeof OrganizationsRouteWithChildren
   '/products': typeof ProductsRoute
   '/project-tasks': typeof ProjectTasksRoute
   '/projects': typeof ProjectsRoute
-  '/quotes': typeof QuotesRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
-  '/sales-orders': typeof SalesOrdersRoute
+  '/sales-orders': typeof SalesOrdersRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/service-contracts': typeof ServiceContractsRoute
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
-  '/tickets': typeof TicketsRoute
+  '/tickets': typeof TicketsRouteWithChildren
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
   '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
+  '/opportunities/$oppId': typeof OpportunitiesOppIdRoute
+  '/organizations/$orgId': typeof OrganizationsOrgIdRoute
+  '/quotes/$quoteId': typeof QuotesQuoteIdRoute
+  '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -194,25 +229,30 @@ export interface FileRoutesByTo {
   '/calendar': typeof CalendarRoute
   '/contacts': typeof ContactsRoute
   '/documents': typeof DocumentsRoute
-  '/opportunities': typeof OpportunitiesRoute
-  '/organizations': typeof OrganizationsRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/organizations': typeof OrganizationsRouteWithChildren
   '/products': typeof ProductsRoute
   '/project-tasks': typeof ProjectTasksRoute
   '/projects': typeof ProjectsRoute
-  '/quotes': typeof QuotesRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
-  '/sales-orders': typeof SalesOrdersRoute
+  '/sales-orders': typeof SalesOrdersRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/service-contracts': typeof ServiceContractsRoute
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
-  '/tickets': typeof TicketsRoute
+  '/tickets': typeof TicketsRouteWithChildren
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
   '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
+  '/opportunities/$oppId': typeof OpportunitiesOppIdRoute
+  '/organizations/$orgId': typeof OrganizationsOrgIdRoute
+  '/quotes/$quoteId': typeof QuotesQuoteIdRoute
+  '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/leads': typeof LeadsIndexRoute
 }
 export interface FileRoutesById {
@@ -222,25 +262,30 @@ export interface FileRoutesById {
   '/calendar': typeof CalendarRoute
   '/contacts': typeof ContactsRoute
   '/documents': typeof DocumentsRoute
-  '/opportunities': typeof OpportunitiesRoute
-  '/organizations': typeof OrganizationsRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/organizations': typeof OrganizationsRouteWithChildren
   '/products': typeof ProductsRoute
   '/project-tasks': typeof ProjectTasksRoute
   '/projects': typeof ProjectsRoute
-  '/quotes': typeof QuotesRoute
+  '/quotes': typeof QuotesRouteWithChildren
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
-  '/sales-orders': typeof SalesOrdersRoute
+  '/sales-orders': typeof SalesOrdersRouteWithChildren
   '/schedule': typeof ScheduleRoute
   '/service-contracts': typeof ServiceContractsRoute
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
-  '/tickets': typeof TicketsRoute
+  '/tickets': typeof TicketsRouteWithChildren
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
   '/leads/$leadId': typeof LeadsLeadIdRoute
   '/leads/create': typeof LeadsCreateRoute
+  '/opportunities/$oppId': typeof OpportunitiesOppIdRoute
+  '/organizations/$orgId': typeof OrganizationsOrgIdRoute
+  '/quotes/$quoteId': typeof QuotesQuoteIdRoute
+  '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRouteTypes {
@@ -270,6 +315,11 @@ export interface FileRouteTypes {
     | '/inventory/storage'
     | '/leads/$leadId'
     | '/leads/create'
+    | '/opportunities/$oppId'
+    | '/organizations/$orgId'
+    | '/quotes/$quoteId'
+    | '/sales-orders/$orderId'
+    | '/tickets/$ticketId'
     | '/leads/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -297,6 +347,11 @@ export interface FileRouteTypes {
     | '/inventory/storage'
     | '/leads/$leadId'
     | '/leads/create'
+    | '/opportunities/$oppId'
+    | '/organizations/$orgId'
+    | '/quotes/$quoteId'
+    | '/sales-orders/$orderId'
+    | '/tickets/$ticketId'
     | '/leads'
   id:
     | '__root__'
@@ -324,6 +379,11 @@ export interface FileRouteTypes {
     | '/inventory/storage'
     | '/leads/$leadId'
     | '/leads/create'
+    | '/opportunities/$oppId'
+    | '/organizations/$orgId'
+    | '/quotes/$quoteId'
+    | '/sales-orders/$orderId'
+    | '/tickets/$ticketId'
     | '/leads/'
   fileRoutesById: FileRoutesById
 }
@@ -333,20 +393,20 @@ export interface RootRouteChildren {
   CalendarRoute: typeof CalendarRoute
   ContactsRoute: typeof ContactsRoute
   DocumentsRoute: typeof DocumentsRoute
-  OpportunitiesRoute: typeof OpportunitiesRoute
-  OrganizationsRoute: typeof OrganizationsRoute
+  OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
+  OrganizationsRoute: typeof OrganizationsRouteWithChildren
   ProductsRoute: typeof ProductsRoute
   ProjectTasksRoute: typeof ProjectTasksRoute
   ProjectsRoute: typeof ProjectsRoute
-  QuotesRoute: typeof QuotesRoute
+  QuotesRoute: typeof QuotesRouteWithChildren
   ReportsRoute: typeof ReportsRoute
   RulesRoute: typeof RulesRoute
-  SalesOrdersRoute: typeof SalesOrdersRoute
+  SalesOrdersRoute: typeof SalesOrdersRouteWithChildren
   ScheduleRoute: typeof ScheduleRoute
   ServiceContractsRoute: typeof ServiceContractsRoute
   SupportFaqRoute: typeof SupportFaqRoute
   TeamsRoute: typeof TeamsRoute
-  TicketsRoute: typeof TicketsRoute
+  TicketsRoute: typeof TicketsRouteWithChildren
   InventoryInboundRoute: typeof InventoryInboundRoute
   InventoryOutboundRoute: typeof InventoryOutboundRoute
   InventoryStorageRoute: typeof InventoryStorageRoute
@@ -497,6 +557,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeadsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tickets/$ticketId': {
+      id: '/tickets/$ticketId'
+      path: '/$ticketId'
+      fullPath: '/tickets/$ticketId'
+      preLoaderRoute: typeof TicketsTicketIdRouteImport
+      parentRoute: typeof TicketsRoute
+    }
+    '/sales-orders/$orderId': {
+      id: '/sales-orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/sales-orders/$orderId'
+      preLoaderRoute: typeof SalesOrdersOrderIdRouteImport
+      parentRoute: typeof SalesOrdersRoute
+    }
+    '/quotes/$quoteId': {
+      id: '/quotes/$quoteId'
+      path: '/$quoteId'
+      fullPath: '/quotes/$quoteId'
+      preLoaderRoute: typeof QuotesQuoteIdRouteImport
+      parentRoute: typeof QuotesRoute
+    }
+    '/organizations/$orgId': {
+      id: '/organizations/$orgId'
+      path: '/$orgId'
+      fullPath: '/organizations/$orgId'
+      preLoaderRoute: typeof OrganizationsOrgIdRouteImport
+      parentRoute: typeof OrganizationsRoute
+    }
+    '/opportunities/$oppId': {
+      id: '/opportunities/$oppId'
+      path: '/$oppId'
+      fullPath: '/opportunities/$oppId'
+      preLoaderRoute: typeof OpportunitiesOppIdRouteImport
+      parentRoute: typeof OpportunitiesRoute
+    }
     '/leads/create': {
       id: '/leads/create'
       path: '/leads/create'
@@ -535,26 +630,84 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface OpportunitiesRouteChildren {
+  OpportunitiesOppIdRoute: typeof OpportunitiesOppIdRoute
+}
+
+const OpportunitiesRouteChildren: OpportunitiesRouteChildren = {
+  OpportunitiesOppIdRoute: OpportunitiesOppIdRoute,
+}
+
+const OpportunitiesRouteWithChildren = OpportunitiesRoute._addFileChildren(
+  OpportunitiesRouteChildren,
+)
+
+interface OrganizationsRouteChildren {
+  OrganizationsOrgIdRoute: typeof OrganizationsOrgIdRoute
+}
+
+const OrganizationsRouteChildren: OrganizationsRouteChildren = {
+  OrganizationsOrgIdRoute: OrganizationsOrgIdRoute,
+}
+
+const OrganizationsRouteWithChildren = OrganizationsRoute._addFileChildren(
+  OrganizationsRouteChildren,
+)
+
+interface QuotesRouteChildren {
+  QuotesQuoteIdRoute: typeof QuotesQuoteIdRoute
+}
+
+const QuotesRouteChildren: QuotesRouteChildren = {
+  QuotesQuoteIdRoute: QuotesQuoteIdRoute,
+}
+
+const QuotesRouteWithChildren =
+  QuotesRoute._addFileChildren(QuotesRouteChildren)
+
+interface SalesOrdersRouteChildren {
+  SalesOrdersOrderIdRoute: typeof SalesOrdersOrderIdRoute
+}
+
+const SalesOrdersRouteChildren: SalesOrdersRouteChildren = {
+  SalesOrdersOrderIdRoute: SalesOrdersOrderIdRoute,
+}
+
+const SalesOrdersRouteWithChildren = SalesOrdersRoute._addFileChildren(
+  SalesOrdersRouteChildren,
+)
+
+interface TicketsRouteChildren {
+  TicketsTicketIdRoute: typeof TicketsTicketIdRoute
+}
+
+const TicketsRouteChildren: TicketsRouteChildren = {
+  TicketsTicketIdRoute: TicketsTicketIdRoute,
+}
+
+const TicketsRouteWithChildren =
+  TicketsRoute._addFileChildren(TicketsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivitiesRoute: ActivitiesRoute,
   CalendarRoute: CalendarRoute,
   ContactsRoute: ContactsRoute,
   DocumentsRoute: DocumentsRoute,
-  OpportunitiesRoute: OpportunitiesRoute,
-  OrganizationsRoute: OrganizationsRoute,
+  OpportunitiesRoute: OpportunitiesRouteWithChildren,
+  OrganizationsRoute: OrganizationsRouteWithChildren,
   ProductsRoute: ProductsRoute,
   ProjectTasksRoute: ProjectTasksRoute,
   ProjectsRoute: ProjectsRoute,
-  QuotesRoute: QuotesRoute,
+  QuotesRoute: QuotesRouteWithChildren,
   ReportsRoute: ReportsRoute,
   RulesRoute: RulesRoute,
-  SalesOrdersRoute: SalesOrdersRoute,
+  SalesOrdersRoute: SalesOrdersRouteWithChildren,
   ScheduleRoute: ScheduleRoute,
   ServiceContractsRoute: ServiceContractsRoute,
   SupportFaqRoute: SupportFaqRoute,
   TeamsRoute: TeamsRoute,
-  TicketsRoute: TicketsRoute,
+  TicketsRoute: TicketsRouteWithChildren,
   InventoryInboundRoute: InventoryInboundRoute,
   InventoryOutboundRoute: InventoryOutboundRoute,
   InventoryStorageRoute: InventoryStorageRoute,
