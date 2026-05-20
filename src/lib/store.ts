@@ -98,7 +98,7 @@ export const leadActions = {
 // ===================== ORGS / CONTACTS =====================
 export const orgActions = {
   create(input: Partial<Organization> & Pick<Organization, "name">) {
-    const org: Organization = { id: uid("O"), name: input.name, ...input };
+    const org: Organization = { ...input, id: uid("O"), name: input.name };
     set((s) => ({ ...s, organizations: [org, ...s.organizations] }));
     return org;
   },
@@ -112,7 +112,7 @@ export const orgActions = {
 
 export const contactActions = {
   create(input: Partial<Contact> & Pick<Contact, "name">) {
-    const c: Contact = { id: uid("C"), name: input.name, ...input };
+    const c: Contact = { ...input, id: uid("C"), name: input.name };
     set((s) => ({ ...s, contacts: [c, ...s.contacts] }));
     return c;
   },
