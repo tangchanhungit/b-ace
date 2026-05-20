@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { Tags, Save, User, Target, Route as RouteIcon, ShoppingBag, Crown, Facebook, Music2, Globe, MessageCircle, MoreHorizontal, Building2, UserCircle } from "lucide-react";
 import { PageHeader } from "@/components/app-shell";
+import { leadActions } from "@/lib/store";
 
 export const Route = createFileRoute("/leads/create")({
   component: CreateLeadPage,
@@ -115,8 +116,12 @@ function CreateLeadPage() {
     if (requireReason && !noBuyReason.trim()) return toast.error("Nhập lý do không mua / ngưng mua");
     if (!tier) return toast.error("Chọn Customer Tier");
 
-    toast.success("Lead đã được tạo", { description: `Tags: ${tags.join(", ")}` });
-    setTimeout(() => navigate({ to: "/leads" }), 800);
+    const created = leadActions.create({
+      name: customerType === "company" ? `${name} · ${companyName}` : name,
+      phone, email, owner, tags, next_action: note || "Follow up new lead",
+    });
+    toast.success("Lead đã được tạo", { description: `${created.id} · ${tags.join(", ")}` });
+    setTimeout(() => navigate({ to: "/leads/$leadId", params: { leadId: created.id } }), 600);
   };
 
   return (
