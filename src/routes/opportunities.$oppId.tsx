@@ -22,8 +22,10 @@ function OppDetail() {
   const opp = useStore((s) => s.opportunities.find((o) => o.id === oppId));
   const orgs = useStore((s) => s.organizations);
   const contacts = useStore((s) => s.contacts);
+  const lead = useStore((s) => s.leads.find((l) => l.id === opp?.leadId));
   const quotes = useStore((s) => s.quotes.filter((q) => q.oppId === oppId));
   const orders = useStore((s) => s.orders.filter((o) => o.oppId === oppId));
+  const contracts = useStore((s) => s.serviceContracts.filter((c) => c.oppId === oppId));
 
   if (!opp) return <div className="p-8">Not found. <Link to="/opportunities" className="underline">Back</Link></div>;
 
@@ -53,6 +55,18 @@ function OppDetail() {
         }
       />
       <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {lead && (
+          <Card className="lg:col-span-3">
+            <CardContent className="p-4 flex items-center justify-between flex-wrap gap-3">
+              <div className="text-sm">
+                <span className="text-muted-foreground">Linked Lead:</span>{" "}
+                <Link to="/leads/$leadId" params={{ leadId: lead.id }} className="font-medium hover:underline">{lead.name}</Link>
+                <span className="text-muted-foreground"> · {lead.phone}</span>
+              </div>
+              <Link to="/leads/$leadId" params={{ leadId: lead.id }} className="text-xs text-primary hover:underline">Open lead →</Link>
+            </CardContent>
+          </Card>
+        )}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3"><CardTitle className="text-sm">Details</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">
