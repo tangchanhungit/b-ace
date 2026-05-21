@@ -11,24 +11,15 @@ import { SEED } from "./seed";
 
 const STORAGE_KEY = "bace_crm_state_v1";
 
-function load(): AppState {
-  if (typeof window === "undefined") return SEED;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return SEED;
-    const parsed = JSON.parse(raw) as AppState;
-    // Shallow merge to backfill new collections
-    return { ...SEED, ...parsed };
-  } catch {
-    return SEED;
-  }
-}
-
-let state: AppState = load();
+// IMPORTANT: do NOT read localStorage at module init — that causes a
+// hydration mismatch between SSR (no storage) and the client. We start
+// from SEED on both sides, then hydrate from localStorage after mount.
+let state: AppState = SEED;
+let hydrated = false;
 const listeners = new Set<() => void>();
 
 function persist() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !hydrated) return;
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
 }
 
@@ -46,12 +37,30 @@ function subscribe(cb: () => void) {
 function snapshot(): AppState { return state; }
 
 export function useStore<T>(selector: (s: AppState) => T): T {
-  return useSyncExternalStore(subscribe, () => selector(state), () => selector(state));
+  return useSyncExternalStore(subscribe, () => selector(state), () => selector(SEED));
 }
 
 export function getState(): AppState { return state; }
 
-export function resetStore() { set(() => SEED); }
+export function resetStore() {
+  state = SEED;
+  persist();
+  listeners.forEach((l) => l());
+}
+
+/** Call once on the client after mount to load persisted state. */
+export function hydrateStoreFromStorage() {
+  if (hydrated || typeof window === "undefined") return;
+  hydrated = true;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as AppState;
+      state = { ...SEED, ...parsed };
+      listeners.forEach((l) => l());
+    }
+  } catch { /* ignore */ }
+}
 
 // --- helpers ---
 const uid = (prefix: string) =>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -11,6 +12,7 @@ import {
 import appCss from "../styles.css?url";
 import { AppShell } from "@/components/app-shell";
 import { Toaster } from "@/components/ui/sonner";
+import { hydrateStoreFromStorage } from "@/lib/store";
 
 function NotFoundComponent() {
   return (
@@ -116,6 +118,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => { hydrateStoreFromStorage(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

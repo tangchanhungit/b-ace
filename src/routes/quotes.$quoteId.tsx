@@ -127,7 +127,10 @@ function Row({ label, value }: { label: string; value: string }) {
 function AddLineButton({ products, onAdd }: { products: { id: string; name: string }[]; onAdd: (id: string) => void }) {
   return (
     <Select onValueChange={onAdd}>
-      <SelectTrigger className="h-8 w-48"><SelectValue placeholder={<><Plus className="h-3 w-3 inline mr-1" />Add item</>} /></SelectTrigger>
+      <SelectTrigger className="h-8 w-48">
+        <Plus className="h-3 w-3 mr-1" />
+        <SelectValue placeholder="Add item" />
+      </SelectTrigger>
       <SelectContent>{products.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
     </Select>
   );
