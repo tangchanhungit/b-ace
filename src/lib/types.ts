@@ -25,6 +25,10 @@ export type Lead = {
   tags: string[];
   activities: Activity[];
   orgId?: ID;
+  customerType?: "individual" | "company";
+  companyName?: string;
+  taxCode?: string;
+  industry?: string;
 };
 
 export type Organization = {
@@ -155,6 +159,21 @@ export type Task = {
   assignee?: string;
 };
 
+export type ContractStatus = "draft" | "active" | "completed" | "cancelled";
+export type ServiceContract = {
+  id: ID;
+  quoteId?: ID;
+  oppId?: ID;
+  orgId?: ID;
+  contactId?: ID;
+  leadId?: ID;
+  value: number;
+  startDate: string;
+  endDate: string;
+  status: ContractStatus;
+  createdAt: string;
+};
+
 export type AppState = {
   leads: Lead[];
   organizations: Organization[];
@@ -163,6 +182,7 @@ export type AppState = {
   products: Product[];
   quotes: Quote[];
   orders: Order[];
+  serviceContracts: ServiceContract[];
   movements: Movement[];
   tickets: Ticket[];
   events: EventItem[];
