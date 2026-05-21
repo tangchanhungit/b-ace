@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, Trash2, Plus } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, FileSignature } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/app-shell";
-import { useStore, quoteActions, orderActions, quoteSubtotal, quoteTax, quoteTotal } from "@/lib/store";
+import { useStore, quoteActions, orderActions, contractActions, quoteSubtotal, quoteTax, quoteTotal } from "@/lib/store";
 import type { QuoteStatus } from "@/lib/types";
 import { fmtVND } from "@/lib/format";
 
@@ -47,6 +47,12 @@ function QuoteDetail() {
     if (o) { toast.success("Sales Order created"); navigate({ to: "/sales-orders/$orderId", params: { orderId: o.id } }); }
   };
 
+  const createContract = () => {
+    if (quote.status !== "accepted") return toast.error("Accept the quote first.");
+    const c = contractActions.createFromQuote(quote.id, opp?.leadId);
+    if (c) { toast.success("Contract created"); navigate({ to: "/service-contracts" }); }
+  };
+
   return (
     <>
       <PageHeader
@@ -59,12 +65,16 @@ function QuoteDetail() {
               <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
               <SelectContent>{STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
             </Select>
+            <Button variant="outline" className="gap-2" onClick={createContract} disabled={quote.status !== "accepted"}>
+              <FileSignature className="h-4 w-4" /> Create Contract
+            </Button>
             <Button className="gap-2" onClick={createOrder} disabled={quote.status !== "accepted"}>
               <ShoppingCart className="h-4 w-4" /> Create Sales Order
             </Button>
           </>
         }
       />
+
       <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
