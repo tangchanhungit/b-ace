@@ -119,6 +119,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => { hydrateStoreFromStorage(); }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppShell>
