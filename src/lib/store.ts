@@ -5,7 +5,7 @@ import type {
   AppState, Lead, Organization, Contact, Opportunity, Product, Quote, Order,
   Movement, Ticket, EventItem, Rule, FAQ, Project, Task, Activity, TaskStatus,
   TicketStatus, TicketReply, OrderStatus, QuoteStatus, OpportunityStatus,
-  TicketPriority, ID,
+  TicketPriority, ID, ServiceContract, ContractStatus,
 } from "./types";
 import { SEED } from "./seed";
 
@@ -255,6 +255,46 @@ export const inventoryActions = {
     const m: Movement = { id: uid("M"), productId, qty: -qty, reason, at: now(), refOrderId };
     set((s) => ({ ...s, movements: [m, ...s.movements] }));
     return m;
+  },
+};
+
+// ===================== SERVICE CONTRACTS =====================
+export const contractActions = {
+  create(input: Partial<ServiceContract> & Pick<ServiceContract, "value">) {
+    const c: ServiceContract = {
+      id: uid("SC"),
+      quoteId: input.quoteId,
+      oppId: input.oppId,
+      orgId: input.orgId,
+      contactId: input.contactId,
+      leadId: input.leadId,
+      value: input.value,
+      startDate: input.startDate ?? now(),
+      endDate: input.endDate ?? new Date(Date.now() + 180 * 86_400_000).toISOString(),
+      status: input.status ?? "draft",
+      createdAt: now(),
+    };
+    set((s) => ({ ...s, serviceContracts: [c, ...s.serviceContracts] }));
+    return c;
+  },
+  createFromQuote(quoteId: ID, leadId?: ID): ServiceContract | null {
+    const q = state.quotes.find((x) => x.id === quoteId);
+    if (!q) return null;
+    const opp = state.opportunities.find((o) => o.id === q.oppId);
+    const value = q.lines.reduce((s, l) => s + l.qty * l.price, 0) * (1 + q.taxRate);
+    return contractActions.create({
+      quoteId, oppId: q.oppId,
+      orgId: opp?.orgId, contactId: opp?.contactId,
+      leadId: leadId ?? opp?.leadId, value,
+      status: "active",
+    });
+  },
+  update(id: ID, patch: Partial<ServiceContract>) {
+    set((s) => ({ ...s, serviceContracts: s.serviceContracts.map((c) => c.id === id ? { ...c, ...patch } : c) }));
+  },
+  setStatus(id: ID, status: ContractStatus) { this.update(id, { status }); },
+  remove(id: ID) {
+    set((s) => ({ ...s, serviceContracts: s.serviceContracts.filter((c) => c.id !== id) }));
   },
 };
 
