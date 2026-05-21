@@ -1,6 +1,6 @@
 import type {
   AppState, Lead, Organization, Contact, Opportunity, Product, Quote, Order,
-  Movement, Ticket, EventItem, Rule, FAQ, Project, Task, Activity,
+  Movement, Ticket, EventItem, Rule, FAQ, Project, Task, Activity, ServiceContract,
 } from "./types";
 
 const daysAgo = (n: number) => {
@@ -170,7 +170,12 @@ const tasks: Task[] = [
   { id: "TK005", title: "Upload giáo trình v3 lên LMS", status: "todo", projectId: "PR001", assignee: "Linh" },
 ];
 
+const serviceContracts: ServiceContract[] = [
+  { id: "SC001", quoteId: "Q001", oppId: "OP001", orgId: "O001", contactId: "C001", leadId: "L004", value: 40_250_000, startDate: daysAgo(8), endDate: daysAhead(180), status: "active", createdAt: daysAgo(8) },
+  { id: "SC002", quoteId: "Q003", oppId: "OP003", orgId: "O003", contactId: "C003", leadId: "L012", value: 23_000_000, startDate: daysAgo(5), endDate: daysAhead(120), status: "active", createdAt: daysAgo(5) },
+];
+
 export const SEED: AppState = {
-  leads, organizations, contacts, opportunities, products, quotes, orders,
+  leads, organizations, contacts, opportunities, products, quotes, orders, serviceContracts,
   movements, tickets, events, rules, faqs, projects, tasks,
 };
