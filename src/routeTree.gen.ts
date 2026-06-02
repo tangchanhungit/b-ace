@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WarehousePrototypeRouteImport } from './routes/warehouse-prototype'
 import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as TeamsRouteImport } from './routes/teams'
 import { Route as SupportFaqRouteImport } from './routes/support-faq'
@@ -41,6 +42,11 @@ import { Route as InventoryStorageRouteImport } from './routes/inventory.storage
 import { Route as InventoryOutboundRouteImport } from './routes/inventory.outbound'
 import { Route as InventoryInboundRouteImport } from './routes/inventory.inbound'
 
+const WarehousePrototypeRoute = WarehousePrototypeRouteImport.update({
+  id: '/warehouse-prototype',
+  path: '/warehouse-prototype',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TicketsRoute = TicketsRouteImport.update({
   id: '/tickets',
   path: '/tickets',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
   '/tickets': typeof TicketsRouteWithChildren
+  '/warehouse-prototype': typeof WarehousePrototypeRoute
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
@@ -251,6 +258,7 @@ export interface FileRoutesByTo {
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
   '/tickets': typeof TicketsRouteWithChildren
+  '/warehouse-prototype': typeof WarehousePrototypeRoute
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
@@ -285,6 +293,7 @@ export interface FileRoutesById {
   '/support-faq': typeof SupportFaqRoute
   '/teams': typeof TeamsRoute
   '/tickets': typeof TicketsRouteWithChildren
+  '/warehouse-prototype': typeof WarehousePrototypeRoute
   '/inventory/inbound': typeof InventoryInboundRoute
   '/inventory/outbound': typeof InventoryOutboundRoute
   '/inventory/storage': typeof InventoryStorageRoute
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/support-faq'
     | '/teams'
     | '/tickets'
+    | '/warehouse-prototype'
     | '/inventory/inbound'
     | '/inventory/outbound'
     | '/inventory/storage'
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/support-faq'
     | '/teams'
     | '/tickets'
+    | '/warehouse-prototype'
     | '/inventory/inbound'
     | '/inventory/outbound'
     | '/inventory/storage'
@@ -386,6 +397,7 @@ export interface FileRouteTypes {
     | '/support-faq'
     | '/teams'
     | '/tickets'
+    | '/warehouse-prototype'
     | '/inventory/inbound'
     | '/inventory/outbound'
     | '/inventory/storage'
@@ -420,6 +432,7 @@ export interface RootRouteChildren {
   SupportFaqRoute: typeof SupportFaqRoute
   TeamsRoute: typeof TeamsRoute
   TicketsRoute: typeof TicketsRouteWithChildren
+  WarehousePrototypeRoute: typeof WarehousePrototypeRoute
   InventoryInboundRoute: typeof InventoryInboundRoute
   InventoryOutboundRoute: typeof InventoryOutboundRoute
   InventoryStorageRoute: typeof InventoryStorageRoute
@@ -430,6 +443,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/warehouse-prototype': {
+      id: '/warehouse-prototype'
+      path: '/warehouse-prototype'
+      fullPath: '/warehouse-prototype'
+      preLoaderRoute: typeof WarehousePrototypeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tickets': {
       id: '/tickets'
       path: '/tickets'
@@ -729,6 +749,7 @@ const rootRouteChildren: RootRouteChildren = {
   SupportFaqRoute: SupportFaqRoute,
   TeamsRoute: TeamsRoute,
   TicketsRoute: TicketsRouteWithChildren,
+  WarehousePrototypeRoute: WarehousePrototypeRoute,
   InventoryInboundRoute: InventoryInboundRoute,
   InventoryOutboundRoute: InventoryOutboundRoute,
   InventoryStorageRoute: InventoryStorageRoute,

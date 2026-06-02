@@ -29,6 +29,7 @@ const INVENTORY: Item[] = [
   { title: "Storage", url: "/inventory/storage", icon: Warehouse },
   { title: "Outbound", url: "/inventory/outbound", icon: PackageMinus },
   { title: "Quy trình kho", url: "/quy-trinh-quan-ly-kho", icon: ClipboardList },
+  { title: "Prototype kho", url: "/warehouse-prototype", icon: ShieldCheck },
 ];
 
 const SUPPORT: Item[] = [
