@@ -17,6 +17,7 @@ import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as SalesOrdersRouteImport } from './routes/sales-orders'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as QuyTrinhQuanLyKhoRouteImport } from './routes/quy-trinh-quan-ly-kho'
 import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ProjectTasksRouteImport } from './routes/project-tasks'
@@ -78,6 +79,11 @@ const RulesRoute = RulesRouteImport.update({
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuyTrinhQuanLyKhoRoute = QuyTrinhQuanLyKhoRouteImport.update({
+  id: '/quy-trinh-quan-ly-kho',
+  path: '/quy-trinh-quan-ly-kho',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotesRoute = QuotesRouteImport.update({
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/project-tasks': typeof ProjectTasksRoute
   '/projects': typeof ProjectsRoute
   '/quotes': typeof QuotesRouteWithChildren
+  '/quy-trinh-quan-ly-kho': typeof QuyTrinhQuanLyKhoRoute
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
   '/sales-orders': typeof SalesOrdersRouteWithChildren
@@ -235,6 +242,7 @@ export interface FileRoutesByTo {
   '/project-tasks': typeof ProjectTasksRoute
   '/projects': typeof ProjectsRoute
   '/quotes': typeof QuotesRouteWithChildren
+  '/quy-trinh-quan-ly-kho': typeof QuyTrinhQuanLyKhoRoute
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
   '/sales-orders': typeof SalesOrdersRouteWithChildren
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/project-tasks': typeof ProjectTasksRoute
   '/projects': typeof ProjectsRoute
   '/quotes': typeof QuotesRouteWithChildren
+  '/quy-trinh-quan-ly-kho': typeof QuyTrinhQuanLyKhoRoute
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
   '/sales-orders': typeof SalesOrdersRouteWithChildren
@@ -302,6 +311,7 @@ export interface FileRouteTypes {
     | '/project-tasks'
     | '/projects'
     | '/quotes'
+    | '/quy-trinh-quan-ly-kho'
     | '/reports'
     | '/rules'
     | '/sales-orders'
@@ -334,6 +344,7 @@ export interface FileRouteTypes {
     | '/project-tasks'
     | '/projects'
     | '/quotes'
+    | '/quy-trinh-quan-ly-kho'
     | '/reports'
     | '/rules'
     | '/sales-orders'
@@ -366,6 +377,7 @@ export interface FileRouteTypes {
     | '/project-tasks'
     | '/projects'
     | '/quotes'
+    | '/quy-trinh-quan-ly-kho'
     | '/reports'
     | '/rules'
     | '/sales-orders'
@@ -399,6 +411,7 @@ export interface RootRouteChildren {
   ProjectTasksRoute: typeof ProjectTasksRoute
   ProjectsRoute: typeof ProjectsRoute
   QuotesRoute: typeof QuotesRouteWithChildren
+  QuyTrinhQuanLyKhoRoute: typeof QuyTrinhQuanLyKhoRoute
   ReportsRoute: typeof ReportsRoute
   RulesRoute: typeof RulesRoute
   SalesOrdersRoute: typeof SalesOrdersRouteWithChildren
@@ -471,6 +484,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quy-trinh-quan-ly-kho': {
+      id: '/quy-trinh-quan-ly-kho'
+      path: '/quy-trinh-quan-ly-kho'
+      fullPath: '/quy-trinh-quan-ly-kho'
+      preLoaderRoute: typeof QuyTrinhQuanLyKhoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quotes': {
@@ -700,6 +720,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectTasksRoute: ProjectTasksRoute,
   ProjectsRoute: ProjectsRoute,
   QuotesRoute: QuotesRouteWithChildren,
+  QuyTrinhQuanLyKhoRoute: QuyTrinhQuanLyKhoRoute,
   ReportsRoute: ReportsRoute,
   RulesRoute: RulesRoute,
   SalesOrdersRoute: SalesOrdersRouteWithChildren,
@@ -718,3 +739,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

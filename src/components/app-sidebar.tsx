@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Users, Target, FileText, FileSignature, ShoppingCart, Package, UserSquare2, Building2,
-  PackagePlus, Warehouse, PackageMinus,
+  PackagePlus, Warehouse, PackageMinus, ClipboardList,
   Ticket, Activity, CalendarClock, Workflow, HelpCircle,
   Calendar, ListTodo, FolderKanban, BarChart3, UsersRound, FileBox,
   type LucideIcon,
@@ -28,6 +28,7 @@ const INVENTORY: Item[] = [
   { title: "Inbound", url: "/inventory/inbound", icon: PackagePlus },
   { title: "Storage", url: "/inventory/storage", icon: Warehouse },
   { title: "Outbound", url: "/inventory/outbound", icon: PackageMinus },
+  { title: "Quy trình kho", url: "/quy-trinh-quan-ly-kho", icon: ClipboardList },
 ];
 
 const SUPPORT: Item[] = [
