@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Users, Target, FileText, FileSignature, ShoppingCart, Package, UserSquare2, Building2,
-  PackagePlus, Warehouse, PackageMinus,
+  PackagePlus, Warehouse, PackageMinus, ClipboardList,
   Ticket, Activity, CalendarClock, Workflow, HelpCircle,
   Calendar, ListTodo, FolderKanban, BarChart3, UsersRound, FileBox,
   type LucideIcon,
