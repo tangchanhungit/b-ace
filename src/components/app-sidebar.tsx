@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Users, Target, FileText, FileSignature, ShoppingCart, Package, UserSquare2, Building2,
   PackagePlus, Warehouse, PackageMinus, ClipboardList,
-  Ticket, Activity, CalendarClock, Workflow, HelpCircle,
+  Ticket, Activity, CalendarClock, Workflow, HelpCircle, ShieldCheck,
   Calendar, ListTodo, FolderKanban, BarChart3, UsersRound, FileBox,
   type LucideIcon,
 } from "lucide-react";
