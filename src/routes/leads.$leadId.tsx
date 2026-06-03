@@ -58,6 +58,7 @@ function activityColor(type: ActivityType) {
 
 function LeadDetailPage() {
   const { leadId } = Route.useParams();
+  const navigate = useNavigate();
   const lead = useStore((s) => s.leads.find((l) => l.id === leadId));
   const orgs = useStore((s) => s.organizations);
   const opps = useStore((s) => s.opportunities.filter((o) => o.leadId === leadId));
