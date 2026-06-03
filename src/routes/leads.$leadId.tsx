@@ -126,6 +126,33 @@ function LeadDetailPage() {
   const quotesSent = quotes.filter((q) => q.status === "sent" || q.status === "accepted").length;
   const contractsActive = contracts.filter((c) => c.status === "active").length;
 
+  const hasContact = Boolean(lead.phone?.trim() || lead.email?.trim());
+  const hasActivity = lead.activities.length > 0;
+  const isConverted = opps.length > 0;
+  const canConvert = hasContact && hasActivity;
+  const disabledReason = !hasContact
+    ? "Add a phone number or email before converting"
+    : !hasActivity
+      ? "Log at least one call, note, or meeting before converting"
+      : "";
+
+  const handleConvert = () => {
+    const o = opportunityActions.create({
+      name: `${lead.name} — Opportunity`,
+      leadId: lead.id,
+      orgId: lead.orgId,
+      value: lead.value || 0,
+      owner: lead.owner,
+      closeDate: new Date(Date.now() + 14 * 86_400_000).toISOString(),
+      status: "open",
+    });
+    leadActions.addActivity(lead.id, { type: "note", content: `Converted to opportunity ${o.id}` });
+    setConvertOpen(false);
+    setJustConverted(true);
+    toast.success("Lead successfully converted to Opportunity");
+    setTimeout(() => navigate({ to: "/opportunities/$oppId", params: { oppId: o.id } }), 400);
+  };
+
   return (
     <>
       <PageHeader
@@ -134,11 +161,63 @@ function LeadDetailPage() {
         description={lead.phone}
         actions={
           <>
+            <Badge
+              variant="outline"
+              className={cn(
+                "transition-all duration-300 mr-1",
+                isConverted
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900"
+                  : "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900",
+                justConverted && "ring-2 ring-emerald-400 scale-105",
+              )}
+            >
+              {isConverted ? (<><Sparkles className="h-3 w-3 mr-1" /> Opportunity</>) : "Lead"}
+            </Badge>
             <Button variant="outline" size="sm" className="gap-2"><Phone className="h-3.5 w-3.5" /> Call</Button>
-            <Button size="sm" className="gap-2" onClick={() => setOppModalOpen(true)}><Target className="h-3.5 w-3.5" /> Create Opportunity</Button>
+            <TooltipProvider delayDuration={150}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span tabIndex={canConvert ? -1 : 0}>
+                    <Button
+                      size="sm"
+                      disabled={!canConvert}
+                      onClick={() => setConvertOpen(true)}
+                      className="gap-2 rounded-full bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all"
+                    >
+                      <ArrowRightLeft className="h-3.5 w-3.5" /> Convert to Opportunity
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {!canConvert && (
+                  <TooltipContent>
+                    <p className="text-xs">{disabledReason || "Complete required information before converting"}</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </>
         }
       />
+
+      <AlertDialog open={convertOpen} onOpenChange={setConvertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <ArrowRightLeft className="h-4 w-4 text-primary" /> Convert Lead to Opportunity
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will move <span className="font-medium text-foreground">{lead.name}</span> into the sales pipeline as an opportunity. You can continue refining the deal afterward.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConvert} className="gap-2">
+              <ArrowRightLeft className="h-3.5 w-3.5" /> Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
 
       <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-10 gap-6">
         {/* LEFT 70% */}
