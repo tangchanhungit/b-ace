@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import {
   Phone, Mail, PhoneCall, StickyNote, CalendarDays, CheckSquare,
   Flame, AlertTriangle, X, Plus, Clock, Target, FileText, FileSignature, Building2, UserCircle,
-  ArrowRight, CheckCircle2, Circle,
+  ArrowRight, CheckCircle2, Circle, ArrowRightLeft, Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { type Activity, type ActivityType, type Lead } from "@/lib/leads-mock";
