@@ -138,21 +138,36 @@ function LeadDetailPage() {
       ? "Log at least one call, note, or meeting before converting"
       : "";
 
-  const handleConvert = () => {
-    const o = opportunityActions.create({
+  const openConvert = () => {
+    setConvertForm({
       name: `${lead.name} — Opportunity`,
+      value: String(lead.value || ""),
+      owner: lead.owner,
+    });
+    setConvertOpen(true);
+  };
+
+  const handleConvert = () => {
+    const name = convertForm.name.trim() || `${lead.name} — Opportunity`;
+    const value = Number(convertForm.value) || 0;
+    const owner = convertForm.owner || lead.owner;
+    const o = opportunityActions.create({
+      name,
       leadId: lead.id,
       orgId: lead.orgId,
-      value: lead.value || 0,
-      owner: lead.owner,
+      value,
+      owner,
       closeDate: new Date(Date.now() + 14 * 86_400_000).toISOString(),
       status: "open",
     });
-    leadActions.addActivity(lead.id, { type: "note", content: `Converted to opportunity ${o.id}` });
+    leadActions.addTag(lead.id, "converted");
+    leadActions.addActivity(lead.id, { type: "note", content: `Converted to Opportunity ${o.id}` });
     setConvertOpen(false);
     setJustConverted(true);
-    toast.success("Lead successfully converted to Opportunity");
-    setTimeout(() => navigate({ to: "/opportunities/$oppId", params: { oppId: o.id } }), 400);
+    toast.success("Lead successfully converted", {
+      description: `${name} is now in the sales pipeline.`,
+    });
+    setTimeout(() => navigate({ to: "/opportunities/$oppId", params: { oppId: o.id } }), 500);
   };
 
   return (
@@ -173,7 +188,7 @@ function LeadDetailPage() {
                 justConverted && "ring-2 ring-emerald-400 scale-105",
               )}
             >
-              {isConverted ? (<><Sparkles className="h-3 w-3 mr-1" /> Opportunity</>) : "Lead"}
+              {isConverted ? (<><Sparkles className="h-3 w-3 mr-1" /> Converted</>) : "Lead"}
             </Badge>
             <Button variant="outline" size="sm" className="gap-2"><Phone className="h-3.5 w-3.5" /> Call</Button>
             <TooltipProvider delayDuration={150}>
@@ -183,7 +198,7 @@ function LeadDetailPage() {
                     <Button
                       size="sm"
                       disabled={!canConvert}
-                      onClick={() => setConvertOpen(true)}
+                      onClick={openConvert}
                       className="gap-2 rounded-full bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all"
                     >
                       <ArrowRightLeft className="h-3.5 w-3.5" /> Convert to Opportunity
@@ -201,24 +216,59 @@ function LeadDetailPage() {
         }
       />
 
-      <AlertDialog open={convertOpen} onOpenChange={setConvertOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+      <Dialog open={convertOpen} onOpenChange={setConvertOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
               <ArrowRightLeft className="h-4 w-4 text-primary" /> Convert Lead to Opportunity
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              This action will move <span className="font-medium text-foreground">{lead.name}</span> into the sales pipeline as an opportunity. You can continue refining the deal afterward.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConvert} className="gap-2">
+            </DialogTitle>
+            <p className="text-sm text-muted-foreground pt-1">
+              This will move the lead into the sales pipeline as an opportunity.
+            </p>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="opp-name">Opportunity name</Label>
+              <Input
+                id="opp-name"
+                value={convertForm.name}
+                onChange={(e) => setConvertForm((f) => ({ ...f, name: e.target.value }))}
+                placeholder="e.g. Acme Corp — Annual contract"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="opp-value">Expected revenue <span className="text-muted-foreground font-normal">(optional)</span></Label>
+              <Input
+                id="opp-value"
+                type="number"
+                min={0}
+                value={convertForm.value}
+                onChange={(e) => setConvertForm((f) => ({ ...f, value: e.target.value }))}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="opp-owner">Assigned sales</Label>
+              <Select value={convertForm.owner} onValueChange={(v) => setConvertForm((f) => ({ ...f, owner: v }))}>
+                <SelectTrigger id="opp-owner"><SelectValue placeholder="Select owner" /></SelectTrigger>
+                <SelectContent>
+                  {OWNERS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="rounded-md border bg-muted/30 p-3 text-xs text-muted-foreground space-y-1">
+              <div className="font-medium text-foreground">Copied from lead</div>
+              <div>{lead.name} · {lead.phone}{lead.email ? ` · ${lead.email}` : ""}</div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConvertOpen(false)}>Cancel</Button>
+            <Button onClick={handleConvert} className="gap-2">
               <ArrowRightLeft className="h-3.5 w-3.5" /> Confirm
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
 
       <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-10 gap-6">
