@@ -70,6 +70,7 @@ function LeadDetailPage() {
   const [oppModalOpen, setOppModalOpen] = useState(false);
   const [convertOpen, setConvertOpen] = useState(false);
   const [justConverted, setJustConverted] = useState(false);
+  const [convertForm, setConvertForm] = useState({ name: "", value: "", owner: "" });
 
   const d = useMemo(() => lead ? derive(lead) : null, [lead]);
   const org = orgs.find((o) => o.id === lead?.orgId);
