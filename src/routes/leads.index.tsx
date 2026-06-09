@@ -80,6 +80,18 @@ const PROGRAM_TAGS = ["mien_phi_online", "mien_phi_offline", "pcth", "van_hanh",
 const PURCHASE_TAGS = ["mua_lan_dau", "mua_lai", "khong_mua", "ngung_mua"];
 const TIER_TAGS = ["vang", "bac", "dong"];
 
+// Customer segments (Vietnamese)
+const SEGMENT_LABELS: Record<NonNullable<Lead["segment"]>, string> = {
+  gia_dinh: "Gia đình",
+  chuan_bi_mo: "Chuẩn bị mở",
+  co_quan: "Có quán",
+};
+const SEGMENT_OPTIONS: [string, string][] = [
+  ["gia_dinh", "Gia đình"],
+  ["chuan_bi_mo", "Chuẩn bị mở"],
+  ["co_quan", "Có quán"],
+];
+
 // ============ Helpers ============
 const ANY = "__any__";
 const PAGE_SIZE = 15;
@@ -95,6 +107,8 @@ type FilterState = {
   purchase: string;
   tier: string;
   owner: string;
+  area: string;
+  segment: string;
   createdRange: DateFilter;
   touchRange: DateFilter;
   staleOnly: boolean;
@@ -104,6 +118,7 @@ type FilterState = {
 
 const EMPTY_FILTERS: FilterState = {
   search: "", source: ANY, program: ANY, purchase: ANY, tier: ANY, owner: ANY,
+  area: ANY, segment: ANY,
   createdRange: "any", touchRange: "any",
   staleOnly: false, hasNextAction: false, hasOpenTicket: false,
 };
