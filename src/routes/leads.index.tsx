@@ -383,6 +383,8 @@ function LeadsPage() {
     if (filters.purchase !== ANY) n++;
     if (filters.tier !== ANY) n++;
     if (filters.owner !== ANY) n++;
+    if (filters.area !== ANY) n++;
+    if (filters.segment !== ANY) n++;
     if (filters.createdRange !== "any") n++;
     if (filters.touchRange !== "any") n++;
     if (filters.staleOnly) n++;
