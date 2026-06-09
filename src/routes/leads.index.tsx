@@ -80,6 +80,18 @@ const PROGRAM_TAGS = ["mien_phi_online", "mien_phi_offline", "pcth", "van_hanh",
 const PURCHASE_TAGS = ["mua_lan_dau", "mua_lai", "khong_mua", "ngung_mua"];
 const TIER_TAGS = ["vang", "bac", "dong"];
 
+// Customer segments (Vietnamese)
+const SEGMENT_LABELS: Record<NonNullable<Lead["segment"]>, string> = {
+  gia_dinh: "Gia đình",
+  chuan_bi_mo: "Chuẩn bị mở",
+  co_quan: "Có quán",
+};
+const SEGMENT_OPTIONS: [string, string][] = [
+  ["gia_dinh", "Gia đình"],
+  ["chuan_bi_mo", "Chuẩn bị mở"],
+  ["co_quan", "Có quán"],
+];
+
 // ============ Helpers ============
 const ANY = "__any__";
 const PAGE_SIZE = 15;
@@ -95,6 +107,8 @@ type FilterState = {
   purchase: string;
   tier: string;
   owner: string;
+  area: string;
+  segment: string;
   createdRange: DateFilter;
   touchRange: DateFilter;
   staleOnly: boolean;
@@ -104,6 +118,7 @@ type FilterState = {
 
 const EMPTY_FILTERS: FilterState = {
   search: "", source: ANY, program: ANY, purchase: ANY, tier: ANY, owner: ANY,
+  area: ANY, segment: ANY,
   createdRange: "any", touchRange: "any",
   staleOnly: false, hasNextAction: false, hasOpenTicket: false,
 };
@@ -133,27 +148,86 @@ const OWNER_COLOR: Record<string, string> = {
 };
 const ownerColor = (n: string) => OWNER_COLOR[n] ?? "bg-slate-500";
 
-function downloadCSV(rows: Lead[]) {
-  const headers = ["ID", "Name", "Phone", "Email", "Company", "Owner", "Value", "Last touch", "Next action", "Tags", "Type", "Stage", "Tier"];
-  const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const lines = [
-    headers.join(","),
-    ...rows.map((l) => {
-      const d = derive(l);
-      return [
-        l.id, l.name, l.phone, l.email ?? "", l.companyName ?? "",
-        l.owner, l.value, l.last_touch, l.next_action, l.tags.join("|"),
-        d.type, d.stage, d.tier ?? "",
-      ].map(esc).join(",");
-    }),
-  ];
-  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+function leadExportRows(rows: Lead[]) {
+  return rows.map((l) => {
+    const d = derive(l);
+    const sourceTag = l.tags.find((t) => SOURCE_TAGS.includes(t));
+    return {
+      ID: l.id, Name: l.name, Phone: l.phone, Email: l.email ?? "",
+      Area: l.area ?? "", Source: sourceTag ? tagMeta(sourceTag).label : "",
+      Status: d.stage,
+      CustomerType: l.segment ? SEGMENT_LABELS[l.segment] : (l.customerType ?? ""),
+      Owner: l.owner, Value: l.value, LastTouch: l.last_touch, NextAction: l.next_action,
+      Tags: l.tags.join("|"), Tier: d.tier ?? "",
+    };
+  });
+}
+
+function triggerDownload(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
+  a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadCSV(rows: Lead[]) {
+  const data = leadExportRows(rows);
+  const headers = Object.keys(data[0] ?? { ID: "" });
+  const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const lines = [headers.join(","), ...data.map((r) => headers.map((h) => esc((r as Record<string, unknown>)[h])).join(","))];
+  triggerDownload(
+    new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" }),
+    `leads-${new Date().toISOString().slice(0, 10)}.csv`,
+  );
+}
+
+function downloadExcel(rows: Lead[]) {
+  // SpreadsheetML 2003 XML — opens natively in Excel as .xls
+  const data = leadExportRows(rows);
+  const headers = Object.keys(data[0] ?? { ID: "" });
+  const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const cell = (v: unknown) => {
+    const isNum = typeof v === "number";
+    return `<Cell><Data ss:Type="${isNum ? "Number" : "String"}">${esc(v)}</Data></Cell>`;
+  };
+  const xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Worksheet ss:Name="Leads"><Table>
+<Row>${headers.map((h) => `<Cell><Data ss:Type="String">${esc(h)}</Data></Cell>`).join("")}</Row>
+${data.map((r) => `<Row>${headers.map((h) => cell((r as Record<string, unknown>)[h])).join("")}</Row>`).join("\n")}
+</Table></Worksheet></Workbook>`;
+  triggerDownload(
+    new Blob([xml], { type: "application/vnd.ms-excel" }),
+    `leads-${new Date().toISOString().slice(0, 10)}.xls`,
+  );
+}
+
+function downloadPDF(rows: Lead[]) {
+  const data = leadExportRows(rows);
+  const headers = ["Name", "Phone", "Area", "Source", "Status", "CustomerType", "Owner", "NextAction"];
+  const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Leads Export</title>
+<style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;color:#111}
+h1{font-size:18px;margin:0 0 12px}
+.meta{color:#666;font-size:11px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th,td{border:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f5f5f5;font-weight:600}
+tr:nth-child(even) td{background:#fafafa}
+@media print{@page{size:A4 landscape;margin:12mm}}
+</style></head><body>
+<h1>Lead List Export</h1>
+<div class="meta">${new Date().toLocaleString()} · ${data.length} leads</div>
+<table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
+<tbody>${data.map((r) => `<tr>${headers.map((h) => `<td>${esc((r as Record<string, unknown>)[h])}</td>`).join("")}</tr>`).join("")}</tbody>
+</table>
+<script>window.onload=()=>{setTimeout(()=>window.print(),300)}</script>
+</body></html>`;
+  const w = window.open("", "_blank");
+  if (!w) return;
+  w.document.open(); w.document.write(html); w.document.close();
 }
 
 // ============ Main page ============
@@ -198,6 +272,10 @@ function LeadsPage() {
     () => Array.from(new Set(leads.map((l) => l.owner))).sort(),
     [leads],
   );
+  const areas = useMemo(
+    () => Array.from(new Set(leads.map((l) => l.area).filter((a): a is string => !!a))).sort(),
+    [leads],
+  );
 
   const orgById = useMemo(() => new Map(organizations.map((o) => [o.id, o])), [organizations]);
   const ticketsByOrg = useMemo(() => {
@@ -229,6 +307,8 @@ function LeadsPage() {
       if (filters.purchase !== ANY && !l.tags.includes(filters.purchase)) return false;
       if (filters.tier !== ANY && !l.tags.includes(filters.tier)) return false;
       if (filters.owner !== ANY && l.owner !== filters.owner) return false;
+      if (filters.area !== ANY && (l.area ?? "") !== filters.area) return false;
+      if (filters.segment !== ANY && (l.segment ?? "") !== filters.segment) return false;
       if (!inWindow(l.last_touch, filters.touchRange)) return false;
       if (filters.staleOnly && !derive(l).stale) return false;
       if (filters.hasNextAction && !l.next_action) return false;
@@ -303,6 +383,8 @@ function LeadsPage() {
     if (filters.purchase !== ANY) n++;
     if (filters.tier !== ANY) n++;
     if (filters.owner !== ANY) n++;
+    if (filters.area !== ANY) n++;
+    if (filters.segment !== ANY) n++;
     if (filters.createdRange !== "any") n++;
     if (filters.touchRange !== "any") n++;
     if (filters.staleOnly) n++;
@@ -353,9 +435,28 @@ function LeadsPage() {
         description="Tag-driven CRM workspace — manage, segment, and accelerate every conversation."
         actions={
           <>
-            <Button variant="outline" size="sm" className="gap-1.5" onClick={bulkExport}>
-              <Download className="h-4 w-4" /> Export CSV
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Download className="h-4 w-4" /> Export <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {selected.size ? `${selected.size} selected` : `${rows.length} filtered`}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => downloadExcel(selected.size ? rows.filter((r) => selected.has(r.id)) : rows)}>
+                  Excel (.xls)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => downloadPDF(selected.size ? rows.filter((r) => selected.has(r.id)) : rows)}>
+                  PDF (print)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => downloadCSV(selected.size ? rows.filter((r) => selected.has(r.id)) : rows)}>
+                  CSV
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Link to="/leads/create">
               <Button size="sm" className="gap-1.5"><Plus className="h-4 w-4" /> Create Lead</Button>
             </Link>
@@ -468,6 +569,14 @@ function LeadsPage() {
                     <FilterSelect value={filters.owner} onChange={(v) => setF("owner", v)}
                       options={owners.map((o) => [o, o])} />
                   </FilterField>
+                  <FilterField label="Area">
+                    <FilterSelect value={filters.area} onChange={(v) => setF("area", v)}
+                      options={areas.map((a) => [a, a])} />
+                  </FilterField>
+                  <FilterField label="Customer Type">
+                    <FilterSelect value={filters.segment} onChange={(v) => setF("segment", v)}
+                      options={SEGMENT_OPTIONS} />
+                  </FilterField>
                   <FilterField label="Last touch">
                     <Select value={filters.touchRange} onValueChange={(v) => setF("touchRange", v as DateFilter)}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
@@ -574,8 +683,9 @@ function LeadsPage() {
                     </button>
                   </TableHead>
                   <TableHead>Phone</TableHead>
+                  <TableHead>Area</TableHead>
                   <TableHead>Source</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Customer Type</TableHead>
                   <TableHead>Stage</TableHead>
                   <TableHead>Tier</TableHead>
                   <TableHead>Owner</TableHead>
@@ -598,7 +708,7 @@ function LeadsPage() {
               <TableBody>
                 {pageRows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={14} className="text-center py-16 text-sm text-muted-foreground">
+                    <TableCell colSpan={15} className="text-center py-16 text-sm text-muted-foreground">
                       No leads match these filters.
                     </TableCell>
                   </TableRow>
@@ -643,11 +753,18 @@ function LeadsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-xs tabular-nums">{l.phone}</TableCell>
+                      <TableCell className="text-xs">
+                        {l.area ? <span className="text-foreground">{l.area}</span> : <span className="text-muted-foreground">—</span>}
+                      </TableCell>
                       <TableCell>
                         {sourceTag ? <TagBadge tag={sourceTag} /> : <span className="text-xs text-muted-foreground">—</span>}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900">{d.type}</Badge>
+                        {l.segment ? (
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900">{SEGMENT_LABELS[l.segment]}</Badge>
+                        ) : (
+                          <Badge variant="outline" className="bg-muted text-muted-foreground border-transparent">{d.type}</Badge>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900">{d.stage}</Badge>
