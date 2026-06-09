@@ -272,6 +272,10 @@ function LeadsPage() {
     () => Array.from(new Set(leads.map((l) => l.owner))).sort(),
     [leads],
   );
+  const areas = useMemo(
+    () => Array.from(new Set(leads.map((l) => l.area).filter((a): a is string => !!a))).sort(),
+    [leads],
+  );
 
   const orgById = useMemo(() => new Map(organizations.map((o) => [o.id, o])), [organizations]);
   const ticketsByOrg = useMemo(() => {
