@@ -435,9 +435,28 @@ function LeadsPage() {
         description="Tag-driven CRM workspace — manage, segment, and accelerate every conversation."
         actions={
           <>
-            <Button variant="outline" size="sm" className="gap-1.5" onClick={bulkExport}>
-              <Download className="h-4 w-4" /> Export CSV
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Download className="h-4 w-4" /> Export <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {selected.size ? `${selected.size} selected` : `${rows.length} filtered`}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => downloadExcel(selected.size ? rows.filter((r) => selected.has(r.id)) : rows)}>
+                  Excel (.xls)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => downloadPDF(selected.size ? rows.filter((r) => selected.has(r.id)) : rows)}>
+                  PDF (print)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => downloadCSV(selected.size ? rows.filter((r) => selected.has(r.id)) : rows)}>
+                  CSV
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Link to="/leads/create">
               <Button size="sm" className="gap-1.5"><Plus className="h-4 w-4" /> Create Lead</Button>
             </Link>
