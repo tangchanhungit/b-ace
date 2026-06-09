@@ -683,8 +683,9 @@ function LeadsPage() {
                     </button>
                   </TableHead>
                   <TableHead>Phone</TableHead>
+                  <TableHead>Area</TableHead>
                   <TableHead>Source</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Customer Type</TableHead>
                   <TableHead>Stage</TableHead>
                   <TableHead>Tier</TableHead>
                   <TableHead>Owner</TableHead>
