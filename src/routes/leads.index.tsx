@@ -569,6 +569,14 @@ function LeadsPage() {
                     <FilterSelect value={filters.owner} onChange={(v) => setF("owner", v)}
                       options={owners.map((o) => [o, o])} />
                   </FilterField>
+                  <FilterField label="Area">
+                    <FilterSelect value={filters.area} onChange={(v) => setF("area", v)}
+                      options={areas.map((a) => [a, a])} />
+                  </FilterField>
+                  <FilterField label="Customer Type">
+                    <FilterSelect value={filters.segment} onChange={(v) => setF("segment", v)}
+                      options={SEGMENT_OPTIONS} />
+                  </FilterField>
                   <FilterField label="Last touch">
                     <Select value={filters.touchRange} onValueChange={(v) => setF("touchRange", v as DateFilter)}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
