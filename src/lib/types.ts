@@ -29,6 +29,8 @@ export type Lead = {
   companyName?: string;
   taxCode?: string;
   industry?: string;
+  area?: string;
+  segment?: "gia_dinh" | "chuan_bi_mo" | "co_quan";
 };
 
 export type Organization = {
