@@ -753,11 +753,18 @@ function LeadsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-xs tabular-nums">{l.phone}</TableCell>
+                      <TableCell className="text-xs">
+                        {l.area ? <span className="text-foreground">{l.area}</span> : <span className="text-muted-foreground">—</span>}
+                      </TableCell>
                       <TableCell>
                         {sourceTag ? <TagBadge tag={sourceTag} /> : <span className="text-xs text-muted-foreground">—</span>}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900">{d.type}</Badge>
+                        {l.segment ? (
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900">{SEGMENT_LABELS[l.segment]}</Badge>
+                        ) : (
+                          <Badge variant="outline" className="bg-muted text-muted-foreground border-transparent">{d.type}</Badge>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900">{d.stage}</Badge>
