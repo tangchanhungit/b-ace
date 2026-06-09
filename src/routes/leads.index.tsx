@@ -148,27 +148,86 @@ const OWNER_COLOR: Record<string, string> = {
 };
 const ownerColor = (n: string) => OWNER_COLOR[n] ?? "bg-slate-500";
 
-function downloadCSV(rows: Lead[]) {
-  const headers = ["ID", "Name", "Phone", "Email", "Company", "Owner", "Value", "Last touch", "Next action", "Tags", "Type", "Stage", "Tier"];
-  const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const lines = [
-    headers.join(","),
-    ...rows.map((l) => {
-      const d = derive(l);
-      return [
-        l.id, l.name, l.phone, l.email ?? "", l.companyName ?? "",
-        l.owner, l.value, l.last_touch, l.next_action, l.tags.join("|"),
-        d.type, d.stage, d.tier ?? "",
-      ].map(esc).join(",");
-    }),
-  ];
-  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+function leadExportRows(rows: Lead[]) {
+  return rows.map((l) => {
+    const d = derive(l);
+    const sourceTag = l.tags.find((t) => SOURCE_TAGS.includes(t));
+    return {
+      ID: l.id, Name: l.name, Phone: l.phone, Email: l.email ?? "",
+      Area: l.area ?? "", Source: sourceTag ? tagMeta(sourceTag).label : "",
+      Status: d.stage,
+      CustomerType: l.segment ? SEGMENT_LABELS[l.segment] : (l.customerType ?? ""),
+      Owner: l.owner, Value: l.value, LastTouch: l.last_touch, NextAction: l.next_action,
+      Tags: l.tags.join("|"), Tier: d.tier ?? "",
+    };
+  });
+}
+
+function triggerDownload(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
+  a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadCSV(rows: Lead[]) {
+  const data = leadExportRows(rows);
+  const headers = Object.keys(data[0] ?? { ID: "" });
+  const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const lines = [headers.join(","), ...data.map((r) => headers.map((h) => esc((r as Record<string, unknown>)[h])).join(","))];
+  triggerDownload(
+    new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" }),
+    `leads-${new Date().toISOString().slice(0, 10)}.csv`,
+  );
+}
+
+function downloadExcel(rows: Lead[]) {
+  // SpreadsheetML 2003 XML — opens natively in Excel as .xls
+  const data = leadExportRows(rows);
+  const headers = Object.keys(data[0] ?? { ID: "" });
+  const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const cell = (v: unknown) => {
+    const isNum = typeof v === "number";
+    return `<Cell><Data ss:Type="${isNum ? "Number" : "String"}">${esc(v)}</Data></Cell>`;
+  };
+  const xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Worksheet ss:Name="Leads"><Table>
+<Row>${headers.map((h) => `<Cell><Data ss:Type="String">${esc(h)}</Data></Cell>`).join("")}</Row>
+${data.map((r) => `<Row>${headers.map((h) => cell((r as Record<string, unknown>)[h])).join("")}</Row>`).join("\n")}
+</Table></Worksheet></Workbook>`;
+  triggerDownload(
+    new Blob([xml], { type: "application/vnd.ms-excel" }),
+    `leads-${new Date().toISOString().slice(0, 10)}.xls`,
+  );
+}
+
+function downloadPDF(rows: Lead[]) {
+  const data = leadExportRows(rows);
+  const headers = ["Name", "Phone", "Area", "Source", "Status", "CustomerType", "Owner", "NextAction"];
+  const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Leads Export</title>
+<style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;color:#111}
+h1{font-size:18px;margin:0 0 12px}
+.meta{color:#666;font-size:11px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th,td{border:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f5f5f5;font-weight:600}
+tr:nth-child(even) td{background:#fafafa}
+@media print{@page{size:A4 landscape;margin:12mm}}
+</style></head><body>
+<h1>Lead List Export</h1>
+<div class="meta">${new Date().toLocaleString()} · ${data.length} leads</div>
+<table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
+<tbody>${data.map((r) => `<tr>${headers.map((h) => `<td>${esc((r as Record<string, unknown>)[h])}</td>`).join("")}</tr>`).join("")}</tbody>
+</table>
+<script>window.onload=()=>{setTimeout(()=>window.print(),300)}</script>
+</body></html>`;
+  const w = window.open("", "_blank");
+  if (!w) return;
+  w.document.open(); w.document.write(html); w.document.close();
 }
 
 // ============ Main page ============
