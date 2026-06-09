@@ -303,6 +303,8 @@ function LeadsPage() {
       if (filters.purchase !== ANY && !l.tags.includes(filters.purchase)) return false;
       if (filters.tier !== ANY && !l.tags.includes(filters.tier)) return false;
       if (filters.owner !== ANY && l.owner !== filters.owner) return false;
+      if (filters.area !== ANY && (l.area ?? "") !== filters.area) return false;
+      if (filters.segment !== ANY && (l.segment ?? "") !== filters.segment) return false;
       if (!inWindow(l.last_touch, filters.touchRange)) return false;
       if (filters.staleOnly && !derive(l).stale) return false;
       if (filters.hasNextAction && !l.next_action) return false;
