@@ -708,7 +708,7 @@ function LeadsPage() {
               <TableBody>
                 {pageRows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={14} className="text-center py-16 text-sm text-muted-foreground">
+                    <TableCell colSpan={15} className="text-center py-16 text-sm text-muted-foreground">
                       No leads match these filters.
                     </TableCell>
                   </TableRow>
