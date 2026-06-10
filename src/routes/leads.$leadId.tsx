@@ -275,236 +275,273 @@ function LeadDetailPage() {
       </Dialog>
 
 
-      <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-1 lg:grid-cols-10 gap-6">
-        {/* LEFT 70% */}
-        <section className="lg:col-span-7 space-y-6">
-          {/* Customer Snapshot + Journey */}
-          <Card>
-            <CardContent className="p-6 space-y-5">
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div className="flex items-start gap-3">
-                  {lead.customerType === "company" ? <Building2 className="h-7 w-7 text-muted-foreground mt-1" /> : <UserCircle className="h-7 w-7 text-muted-foreground mt-1" />}
-                  <div>
+
+      <div className="mx-auto max-w-7xl px-6 py-6 space-y-6">
+        {/* Header summary card */}
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-muted/20">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex items-start gap-4">
+                <div className="h-14 w-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  {lead.customerType === "company" ? <Building2 className="h-7 w-7" /> : <UserCircle className="h-7 w-7" />}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h1 className="text-2xl font-semibold tracking-tight">{lead.name}</h1>
-                    <div className="text-sm text-muted-foreground mt-1 flex flex-wrap items-center gap-3">
-                      <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {lead.phone}</span>
-                      {lead.email && <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {lead.email}</span>}
-                      {(lead.companyName || org) && <span className="inline-flex items-center gap-1"><Building2 className="h-3.5 w-3.5" /> {lead.companyName ?? org?.name}</span>}
-                    </div>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "transition-all duration-300",
+                        isConverted
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900"
+                          : "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900",
+                        justConverted && "ring-2 ring-emerald-400 scale-105",
+                      )}
+                    >
+                      {isConverted ? (<><Sparkles className="h-3 w-3 mr-1" /> Converted</>) : "Lead"}
+                    </Badge>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-muted-foreground">Deal value</div>
-                  <div className="text-xl font-semibold tabular-nums">{fmtVND(lead.value)}</div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 pt-3 border-t">
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900">{d.type}</Badge>
-                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900">{d.stage}</Badge>
-                {d.tier && <Badge className={cn("font-semibold", tierClasses(d.tier))}>{d.tier}</Badge>}
-                {d.high && <Badge className="bg-destructive text-destructive-foreground gap-1"><Flame className="h-3 w-3" /> HIGH</Badge>}
-                {d.stale && <Badge variant="outline" className="border-destructive/40 text-destructive gap-1"><AlertTriangle className="h-3 w-3" /> Stale · {daysSince(lead.last_touch)}d</Badge>}
-              </div>
-
-              {/* Pipeline progression */}
-              <div className="pt-3 border-t">
-                <div className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">Customer Journey</div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {stages.map((s, i) => (
-                    <div key={s.key} className="flex items-center gap-2">
-                      <div className={cn(
-                        "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border",
-                        s.done && i === currentStageIdx ? "bg-primary text-primary-foreground border-primary" :
-                        s.done ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-900" :
-                        "bg-muted text-muted-foreground border-transparent",
-                      )}>
-                        {s.done ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Circle className="h-3.5 w-3.5" />}
-                        {s.label}
-                      </div>
-                      {i < stages.length - 1 && <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />}
+                  {(lead.companyName || org) && (
+                    <div className="text-sm text-muted-foreground mt-1 inline-flex items-center gap-1.5">
+                      <Building2 className="h-3.5 w-3.5" /> {lead.companyName ?? org?.name}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Snapshot */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t">
-                <SnapshotCell label="Opportunities" value={opps.length.toString()} />
-                <SnapshotCell label="Total value" value={fmtVND(totalValue)} />
-                <SnapshotCell label="Quotes sent" value={quotesSent.toString()} />
-                <SnapshotCell label="Contracts active" value={contractsActive.toString()} />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tabs */}
-          <Card>
-            <CardContent className="p-4">
-              <Tabs defaultValue="opps">
-                <TabsList>
-                  <TabsTrigger value="opps">Opportunities ({opps.length})</TabsTrigger>
-                  <TabsTrigger value="quotes">Quotes ({quotes.length})</TabsTrigger>
-                  <TabsTrigger value="contracts">Contracts ({contracts.length})</TabsTrigger>
-                  <TabsTrigger value="activities">Activities ({journeyActivities.length})</TabsTrigger>
-                </TabsList>
-
-                {/* Opportunities */}
-                <TabsContent value="opps" className="mt-4 space-y-3">
-                  <div className="flex justify-end">
-                    <Button size="sm" className="gap-2" onClick={() => setOppModalOpen(true)}><Plus className="h-3.5 w-3.5" /> Create Opportunity</Button>
-                  </div>
-                  {opps.length === 0 ? <Empty label="No opportunities yet." /> :
-                    <div className="divide-y rounded-lg border">
-                      {opps.map((o) => (
-                        <Link key={o.id} to="/opportunities/$oppId" params={{ oppId: o.id }} className="flex items-center justify-between p-3 hover:bg-muted/40 text-sm">
-                          <div>
-                            <div className="font-medium">{o.name}</div>
-                            <div className="text-xs text-muted-foreground">{o.id} · close {fmtDate(o.closeDate)}</div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="tabular-nums">{fmtVND(o.value)}</span>
-                            <Badge variant="outline">{o.status}</Badge>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>}
-                </TabsContent>
-
-                {/* Quotes */}
-                <TabsContent value="quotes" className="mt-4 space-y-3">
-                  {quotes.length === 0 ? <Empty label="No quotes. Create one from an opportunity." /> :
-                    <div className="divide-y rounded-lg border">
-                      {quotes.map((q) => {
-                        const total = q.lines.reduce((s, l) => s + l.qty * l.price, 0) * (1 + q.taxRate);
-                        return (
-                          <Link key={q.id} to="/quotes/$quoteId" params={{ quoteId: q.id }} className="flex items-center justify-between p-3 hover:bg-muted/40 text-sm">
-                            <div>
-                              <div className="font-medium font-mono">{q.id}</div>
-                              <div className="text-xs text-muted-foreground">{q.lines.length} items · created {fmtDate(q.createdAt)}</div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="tabular-nums">{fmtVND(total)}</span>
-                              <Badge variant="outline">{q.status}</Badge>
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>}
-                </TabsContent>
-
-                {/* Contracts */}
-                <TabsContent value="contracts" className="mt-4 space-y-3">
-                  {contracts.length === 0 ? <Empty label="No contracts. Accept a quote, then create a contract." /> :
-                    <div className="divide-y rounded-lg border">
-                      {contracts.map((c) => (
-                        <Link key={c.id} to="/service-contracts" className="flex items-center justify-between p-3 hover:bg-muted/40 text-sm">
-                          <div>
-                            <div className="font-medium font-mono">{c.id}</div>
-                            <div className="text-xs text-muted-foreground">{fmtDate(c.startDate)} → {fmtDate(c.endDate)}</div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="tabular-nums">{fmtVND(c.value)}</span>
-                            <Badge variant="outline">{c.status}</Badge>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>}
-                </TabsContent>
-
-                {/* Activities */}
-                <TabsContent value="activities" className="mt-4 space-y-4">
-                  <div className="space-y-3">
-                    <Textarea value={composer} onChange={(e) => setComposer(e.target.value)} placeholder="Add note / log call / add task…" rows={3} />
-                    <div className="flex flex-wrap gap-2">
-                      <Button size="sm" variant="outline" className="gap-2" onClick={() => addActivity("note")}><StickyNote className="h-3.5 w-3.5" /> Note</Button>
-                      <Button size="sm" variant="outline" className="gap-2" onClick={() => addActivity("call")}><PhoneCall className="h-3.5 w-3.5" /> Call</Button>
-                      <Button size="sm" variant="outline" className="gap-2" onClick={() => addActivity("meeting")}><CalendarDays className="h-3.5 w-3.5" /> Meeting</Button>
-                      <Button size="sm" className="gap-2 ml-auto" onClick={() => addActivity("task")}><CheckSquare className="h-3.5 w-3.5" /> Task</Button>
-                    </div>
-                  </div>
-                  {journeyActivities.length === 0 ? <Empty label="No activity yet." /> : (
-                    <ol className="relative border-l border-border ml-3 space-y-5 mt-4">
-                      {journeyActivities.map((a) => (
-                        <li key={a.id} className="ml-6">
-                          <span className={cn("absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full ring-4 ring-card", activityColor(a.type))}>
-                            {activityIcon(a.type)}
-                          </span>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{a.type}</span>
-                            <span className="text-xs text-muted-foreground inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {fmtDateTime(a.created_at)}</span>
-                          </div>
-                          <p className="text-sm leading-relaxed">{a.content}</p>
-                        </li>
-                      ))}
-                    </ol>
                   )}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </section>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mt-2">
+                    <span className="inline-flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> {lead.phone}</span>
+                    {lead.email && <span className="inline-flex items-center gap-1.5"><Mail className="h-3.5 w-3.5" /> {lead.email}</span>}
+                    <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5" /> Created {fmtDate(lead.last_touch)}</span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-3">
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900">{d.type}</Badge>
+                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900">{d.stage}</Badge>
+                    {d.tier && <Badge className={cn("font-semibold", tierClasses(d.tier))}>{d.tier}</Badge>}
+                    {d.high && <Badge className="bg-destructive text-destructive-foreground gap-1"><Flame className="h-3 w-3" /> HIGH</Badge>}
+                    {d.stale && <Badge variant="outline" className="border-destructive/40 text-destructive gap-1"><AlertTriangle className="h-3 w-3" /> Stale · {daysSince(lead.last_touch)}d</Badge>}
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Deal value</div>
+                <div className="text-2xl font-semibold tabular-nums">{fmtVND(lead.value)}</div>
+              </div>
+            </div>
 
-        {/* RIGHT 30% */}
-        <aside className="lg:col-span-3 space-y-6 lg:sticky lg:top-20 self-start">
-          {/* Customer Info */}
-          <Card>
-            <CardHeader className="pb-3"><CardTitle className="text-sm">Customer Info</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <Field label="Name"><Input value={lead.name} onChange={(e) => setLead({ name: e.target.value })} /></Field>
-              <Field label="Phone"><Input value={lead.phone} onChange={(e) => setLead({ phone: e.target.value })} /></Field>
-              <Field label="Email"><Input value={lead.email ?? ""} onChange={(e) => setLead({ email: e.target.value })} placeholder="email@example.com" /></Field>
-              <Field label="Customer type">
-                <Select value={lead.customerType ?? "individual"} onValueChange={(v) => setLead({ customerType: v as "individual" | "company" })}>
-                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="individual">Individual</SelectItem>
-                    <SelectItem value="company">Company</SelectItem>
-                  </SelectContent>
-                </Select>
-              </Field>
-              {lead.customerType === "company" && (
-                <>
-                  <Field label="Company name"><Input value={lead.companyName ?? ""} onChange={(e) => setLead({ companyName: e.target.value })} /></Field>
-                  <Field label="Tax code"><Input value={lead.taxCode ?? ""} onChange={(e) => setLead({ taxCode: e.target.value })} /></Field>
-                  <Field label="Industry"><Input value={lead.industry ?? ""} onChange={(e) => setLead({ industry: e.target.value })} /></Field>
-                </>
-              )}
-              <Field label="Owner">
-                <Select value={lead.owner} onValueChange={(v) => setLead({ owner: v })}>
-                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                  <SelectContent>{OWNERS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
-                </Select>
-              </Field>
-              <Field label="Value (VND)"><Input type="number" value={lead.value} onChange={(e) => setLead({ value: Number(e.target.value) || 0 })} /></Field>
-              <Field label="Next action"><Input value={lead.next_action} onChange={(e) => setLead({ next_action: e.target.value })} /></Field>
-              <div className="text-xs text-muted-foreground">Last touch: {fmtDateTime(lead.last_touch)} ({daysSince(lead.last_touch)}d)</div>
-            </CardContent>
-          </Card>
-
-          {/* Tags */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Tags</CardTitle>
-              <p className="text-xs text-muted-foreground">Tags drive Type, Stage, Tier & Priority.</p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex flex-wrap gap-1.5 min-h-[2rem]">
-                {lead.tags.length === 0 && <span className="text-xs text-muted-foreground">No tags.</span>}
-                {lead.tags.map((t) => (
-                  <span key={t} className="inline-flex items-center gap-1 rounded-full bg-secondary text-secondary-foreground pl-2.5 pr-1 py-0.5 text-xs font-medium">
-                    {t}
-                    <button onClick={() => removeTag(t)} className="hover:bg-background/60 rounded-full p-0.5" aria-label={`Remove ${t}`}><X className="h-3 w-3" /></button>
-                  </span>
+            {/* Pipeline progression */}
+            <div className="pt-5 mt-5 border-t">
+              <div className="flex items-center gap-2 flex-wrap">
+                {stages.map((s, i) => (
+                  <div key={s.key} className="flex items-center gap-2">
+                    <div className={cn(
+                      "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border",
+                      s.done && i === currentStageIdx ? "bg-primary text-primary-foreground border-primary" :
+                      s.done ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-900" :
+                      "bg-muted text-muted-foreground border-transparent",
+                    )}>
+                      {s.done ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Circle className="h-3.5 w-3.5" />}
+                      {s.label}
+                    </div>
+                    {i < stages.length - 1 && <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />}
+                  </div>
                 ))}
               </div>
-              <div className="flex gap-2">
-                <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }} placeholder="Add tag (e.g. vang)" className="h-9" />
-                <Button size="sm" onClick={addTag} className="gap-1"><Plus className="h-3.5 w-3.5" /> Add</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* LEFT — Customer Information */}
+          <aside className="lg:col-span-1 space-y-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /> Key Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <InfoRow label="Name" value={<Input value={lead.name} onChange={(e) => setLead({ name: e.target.value })} className="h-8" />} />
+                <InfoRow label="Company" value={
+                  <Input value={lead.companyName ?? ""} placeholder="—" onChange={(e) => setLead({ companyName: e.target.value })} className="h-8" />
+                } />
+                <InfoRow label="Phone" value={<Input value={lead.phone} onChange={(e) => setLead({ phone: e.target.value })} className="h-8" />} />
+                <InfoRow label="Email" value={<Input value={lead.email ?? ""} placeholder="email@example.com" onChange={(e) => setLead({ email: e.target.value })} className="h-8" />} />
+                <InfoRow label="Source" value={
+                  <div className="flex flex-wrap gap-1">
+                    {sourceTags(lead.tags).length === 0
+                      ? <span className="text-muted-foreground text-xs">—</span>
+                      : sourceTags(lead.tags).map((s) => <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>)}
+                  </div>
+                } />
+                <InfoRow label="Area" value={<Input value={lead.area ?? ""} placeholder="Khu vực" onChange={(e) => setLead({ area: e.target.value })} className="h-8" />} />
+                <InfoRow label="Customer Type" value={
+                  <Select value={lead.segment ?? ""} onValueChange={(v) => setLead({ segment: v as Lead["segment"] })}>
+                    <SelectTrigger className="h-8"><SelectValue placeholder="—" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="gia_dinh">Gia đình</SelectItem>
+                      <SelectItem value="chuan_bi_mo">Chuẩn bị mở</SelectItem>
+                      <SelectItem value="co_quan">Có quán</SelectItem>
+                    </SelectContent>
+                  </Select>
+                } />
+                <InfoRow label="Expected Date" value={<Input value={lead.next_action} onChange={(e) => setLead({ next_action: e.target.value })} className="h-8" />} />
+                <InfoRow label="Assigned Sales" value={
+                  <Select value={lead.owner} onValueChange={(v) => setLead({ owner: v })}>
+                    <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                    <SelectContent>{OWNERS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                  </Select>
+                } />
+                <InfoRow label="Deal Value" value={<Input type="number" value={lead.value} onChange={(e) => setLead({ value: Number(e.target.value) || 0 })} className="h-8" />} />
+                <div className="text-[11px] text-muted-foreground pt-2 border-t">Last touch: {fmtDateTime(lead.last_touch)} ({daysSince(lead.last_touch)}d ago)</div>
+              </CardContent>
+            </Card>
+
+            {/* Tags compact */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2"><TagIcon className="h-4 w-4 text-muted-foreground" /> Tags</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex flex-wrap gap-1.5 min-h-[1.5rem]">
+                  {lead.tags.length === 0 && <span className="text-xs text-muted-foreground">No tags.</span>}
+                  {lead.tags.map((t) => (
+                    <span key={t} className="inline-flex items-center gap-1 rounded-full bg-secondary text-secondary-foreground pl-2.5 pr-1 py-0.5 text-xs font-medium">
+                      {t}
+                      <button onClick={() => removeTag(t)} className="hover:bg-background/60 rounded-full p-0.5" aria-label={`Remove ${t}`}><X className="h-3 w-3" /></button>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }} placeholder="Add tag" className="h-8" />
+                  <Button size="sm" onClick={addTag} className="gap-1 h-8"><Plus className="h-3.5 w-3.5" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+
+          {/* RIGHT — Activities + Purchase + Notes */}
+          <section className="lg:col-span-2 space-y-6">
+            {/* Activity Timeline */}
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm">Activity Timeline</CardTitle>
+                  <div className="flex gap-1.5">
+                    <Button size="sm" variant="outline" className="h-7 gap-1.5" onClick={() => { setComposer(""); document.getElementById("activity-composer")?.focus(); }}>
+                      <Plus className="h-3 w-3" /> Add
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="rounded-lg border bg-muted/20 p-3 space-y-2">
+                  <Textarea id="activity-composer" value={composer} onChange={(e) => setComposer(e.target.value)} placeholder="Log an interaction… (call summary, meeting notes, follow-up)" rows={2} className="bg-background" />
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" className="h-8 gap-2" onClick={() => addActivity("call")}><PhoneCall className="h-3.5 w-3.5 text-emerald-600" /> Call</Button>
+                    <Button size="sm" variant="outline" className="h-8 gap-2" onClick={() => addActivity("meeting")}><CalendarDays className="h-3.5 w-3.5 text-indigo-600" /> Meeting</Button>
+                    <Button size="sm" variant="outline" className="h-8 gap-2" onClick={() => addActivity("note")}><StickyNote className="h-3.5 w-3.5 text-slate-600" /> Note</Button>
+                    <Button size="sm" className="h-8 gap-2 ml-auto" onClick={() => addActivity(composer ? "note" : "task")} disabled={!composer.trim()}>
+                      <Send className="h-3.5 w-3.5" /> Save
+                    </Button>
+                  </div>
+                </div>
+
+                {journeyActivities.length === 0 ? <Empty label="No activities yet. Log your first interaction above." /> : (
+                  <ol className="relative border-l border-border ml-3 space-y-5">
+                    {journeyActivities.map((a) => (
+                      <li key={a.id} className="ml-6">
+                        <span className={cn("absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full ring-4 ring-card", activityColor(a.type))}>
+                          {activityIcon(a.type)}
+                        </span>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{a.type}</span>
+                          <span className="text-xs text-muted-foreground inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {fmtDateTime(a.created_at)}</span>
+                        </div>
+                        <p className="text-sm leading-relaxed">{a.content}</p>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Purchase History */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Purchase History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PurchaseHistory orders={orders} products={products} />
+              </CardContent>
+            </Card>
+
+            {/* Pipeline records */}
+            <Card>
+              <CardContent className="p-4">
+                <Tabs defaultValue="opps">
+                  <TabsList>
+                    <TabsTrigger value="opps">Opportunities ({opps.length})</TabsTrigger>
+                    <TabsTrigger value="quotes">Quotes ({quotes.length})</TabsTrigger>
+                    <TabsTrigger value="contracts">Contracts ({contracts.length})</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="opps" className="mt-4 space-y-3">
+                    <div className="flex justify-end">
+                      <Button size="sm" className="gap-2" onClick={() => setOppModalOpen(true)}><Plus className="h-3.5 w-3.5" /> Create Opportunity</Button>
+                    </div>
+                    {opps.length === 0 ? <Empty label="No opportunities yet." /> :
+                      <div className="divide-y rounded-lg border">
+                        {opps.map((o) => (
+                          <Link key={o.id} to="/opportunities/$oppId" params={{ oppId: o.id }} className="flex items-center justify-between p-3 hover:bg-muted/40 text-sm">
+                            <div>
+                              <div className="font-medium">{o.name}</div>
+                              <div className="text-xs text-muted-foreground">{o.id} · close {fmtDate(o.closeDate)}</div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="tabular-nums">{fmtVND(o.value)}</span>
+                              <Badge variant="outline">{o.status}</Badge>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>}
+                  </TabsContent>
+                  <TabsContent value="quotes" className="mt-4 space-y-3">
+                    {quotes.length === 0 ? <Empty label="No quotes." /> :
+                      <div className="divide-y rounded-lg border">
+                        {quotes.map((q) => {
+                          const total = q.lines.reduce((s, l) => s + l.qty * l.price, 0) * (1 + q.taxRate);
+                          return (
+                            <Link key={q.id} to="/quotes/$quoteId" params={{ quoteId: q.id }} className="flex items-center justify-between p-3 hover:bg-muted/40 text-sm">
+                              <div>
+                                <div className="font-medium font-mono">{q.id}</div>
+                                <div className="text-xs text-muted-foreground">{q.lines.length} items · {fmtDate(q.createdAt)}</div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="tabular-nums">{fmtVND(total)}</span>
+                                <Badge variant="outline">{q.status}</Badge>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>}
+                  </TabsContent>
+                  <TabsContent value="contracts" className="mt-4 space-y-3">
+                    {contracts.length === 0 ? <Empty label="No contracts." /> :
+                      <div className="divide-y rounded-lg border">
+                        {contracts.map((c) => (
+                          <Link key={c.id} to="/service-contracts" className="flex items-center justify-between p-3 hover:bg-muted/40 text-sm">
+                            <div>
+                              <div className="font-medium font-mono">{c.id}</div>
+                              <div className="text-xs text-muted-foreground">{fmtDate(c.startDate)} → {fmtDate(c.endDate)}</div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="tabular-nums">{fmtVND(c.value)}</span>
+                              <Badge variant="outline">{c.status}</Badge>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
       </div>
 
       <CreateOppModal open={oppModalOpen} onOpenChange={setOppModalOpen} lead={lead} org={org} />
