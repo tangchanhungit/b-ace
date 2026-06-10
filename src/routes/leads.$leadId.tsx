@@ -552,14 +552,6 @@ function LeadDetailPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="space-y-1.5"><label className="text-xs font-medium text-muted-foreground">{label}</label>{children}</div>;
 }
-function SnapshotCell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border bg-card p-3">
-      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</div>
-      <div className="text-base font-semibold tabular-nums mt-1">{value}</div>
-    </div>
-  );
-}
 function Empty({ label }: { label: string }) {
   return <div className="text-sm text-muted-foreground text-center py-10 border rounded-lg border-dashed">{label}</div>;
 }
