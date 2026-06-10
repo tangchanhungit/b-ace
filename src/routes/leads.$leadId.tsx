@@ -2,8 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   Phone, Mail, PhoneCall, StickyNote, CalendarDays, CheckSquare,
-  Flame, AlertTriangle, X, Plus, Clock, Target, FileText, FileSignature, Building2, UserCircle,
-  ArrowRight, CheckCircle2, Circle, ArrowRightLeft, Sparkles,
+  Flame, AlertTriangle, X, Plus, Clock, Target, FileText, Building2, UserCircle,
+  ArrowRight, CheckCircle2, Circle, ArrowRightLeft, Sparkles, Send, MapPin, User, Tag as TagIcon, Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
