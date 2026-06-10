@@ -64,6 +64,8 @@ function LeadDetailPage() {
   const opps = useStore((s) => s.opportunities.filter((o) => o.leadId === leadId));
   const quotes = useStore((s) => s.quotes.filter((q) => opps.some((o) => o.id === q.oppId)));
   const contracts = useStore((s) => s.serviceContracts.filter((c) => c.leadId === leadId));
+  const products = useStore((s) => s.products);
+  const orders = useStore((s) => s.orders.filter((o) => opps.some((op) => op.id === o.oppId)));
 
   const [composer, setComposer] = useState("");
   const [tagInput, setTagInput] = useState("");
