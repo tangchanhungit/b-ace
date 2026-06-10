@@ -564,6 +564,84 @@ function Empty({ label }: { label: string }) {
   return <div className="text-sm text-muted-foreground text-center py-10 border rounded-lg border-dashed">{label}</div>;
 }
 
+function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-[110px_1fr] items-center gap-3">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="min-w-0">{value}</div>
+    </div>
+  );
+}
+
+const SOURCE_TAGS = ["zalo", "tiktok", "facebook", "shopee", "tiki", "hotline", "referral"];
+function sourceTags(tags: string[]): string[] {
+  return tags.filter((t) => SOURCE_TAGS.includes(t.toLowerCase()));
+}
+
+function PurchaseHistory({ orders, products }: { orders: import("@/lib/types").Order[]; products: import("@/lib/types").Product[] }) {
+  const prodName = (id: string) => products.find((p) => p.id === id)?.name ?? id;
+  const now = Date.now();
+  const cutoff = now - 30 * 86_400_000;
+  const rows = (filtered: typeof orders) => filtered.flatMap((o) =>
+    o.lines.map((l, idx) => ({
+      key: `${o.id}-${idx}`,
+      name: prodName(l.productId),
+      qty: l.qty,
+      value: l.qty * l.price,
+      date: o.createdAt,
+    })),
+  ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const last30 = rows(orders.filter((o) => new Date(o.createdAt).getTime() >= cutoff));
+  const all = rows(orders);
+
+  const Table = ({ data, totalLabel }: { data: ReturnType<typeof rows>; totalLabel: string }) => {
+    const total = data.reduce((s, r) => s + r.value, 0);
+    if (data.length === 0) return <Empty label="No orders in this period." />;
+    return (
+      <div className="rounded-lg border overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/40 text-xs text-muted-foreground">
+            <tr>
+              <th className="text-left font-medium px-3 py-2">Product</th>
+              <th className="text-right font-medium px-3 py-2 w-20">Qty</th>
+              <th className="text-right font-medium px-3 py-2 w-32">Value</th>
+              <th className="text-right font-medium px-3 py-2 w-28">Date</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {data.map((r) => (
+              <tr key={r.key} className="hover:bg-muted/30">
+                <td className="px-3 py-2">{r.name}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{r.qty}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{fmtVND(r.value)}</td>
+                <td className="px-3 py-2 text-right text-muted-foreground">{fmtDate(r.date)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot className="bg-muted/30 font-semibold">
+            <tr>
+              <td className="px-3 py-2" colSpan={2}>{totalLabel}</td>
+              <td className="px-3 py-2 text-right tabular-nums" colSpan={2}>{fmtVND(total)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    );
+  };
+
+  return (
+    <Tabs defaultValue="30d">
+      <TabsList>
+        <TabsTrigger value="30d">Last 30 Days</TabsTrigger>
+        <TabsTrigger value="all">All Time</TabsTrigger>
+      </TabsList>
+      <TabsContent value="30d" className="mt-4"><Table data={last30} totalLabel="Total (Last 30 days)" /></TabsContent>
+      <TabsContent value="all" className="mt-4"><Table data={all} totalLabel="Total (All time)" /></TabsContent>
+    </Tabs>
+  );
+}
+
 function CreateOppModal({ open, onOpenChange, lead, org }: { open: boolean; onOpenChange: (v: boolean) => void; lead: Lead; org?: { id: string; name: string } }) {
   const navigate = useNavigate();
   const orgs = useStore((s) => s.organizations);
