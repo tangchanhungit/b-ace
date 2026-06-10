@@ -192,6 +192,8 @@ function LeadDetailPage() {
             >
               {isConverted ? (<><Sparkles className="h-3 w-3 mr-1" /> Converted</>) : "Lead"}
             </Badge>
+            <Button variant="outline" size="sm" className="gap-2"><Pencil className="h-3.5 w-3.5" /> Edit</Button>
+            <Button variant="outline" size="sm" className="gap-2" disabled={!lead.email} onClick={() => lead.email && (window.location.href = `mailto:${lead.email}`)}><Send className="h-3.5 w-3.5" /> Email</Button>
             <Button variant="outline" size="sm" className="gap-2"><Phone className="h-3.5 w-3.5" /> Call</Button>
             <TooltipProvider delayDuration={150}>
               <Tooltip>
