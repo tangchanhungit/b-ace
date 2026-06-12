@@ -32,6 +32,7 @@ import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WarehousesIndexRouteImport } from './routes/warehouses.index'
 import { Route as LeadsIndexRouteImport } from './routes/leads.index'
+import { Route as WarehousesTransfersRouteImport } from './routes/warehouses.transfers'
 import { Route as WarehousesWarehouseIdRouteImport } from './routes/warehouses.$warehouseId'
 import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
 import { Route as SalesOrdersOrderIdRouteImport } from './routes/sales-orders.$orderId'
@@ -159,6 +160,11 @@ const LeadsIndexRoute = LeadsIndexRouteImport.update({
   path: '/leads/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WarehousesTransfersRoute = WarehousesTransfersRouteImport.update({
+  id: '/warehouses/transfers',
+  path: '/warehouses/transfers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WarehousesWarehouseIdRoute = WarehousesWarehouseIdRouteImport.update({
   id: '/warehouses/$warehouseId',
   path: '/warehouses/$warehouseId',
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/warehouses/$warehouseId': typeof WarehousesWarehouseIdRoute
+  '/warehouses/transfers': typeof WarehousesTransfersRoute
   '/leads/': typeof LeadsIndexRoute
   '/warehouses/': typeof WarehousesIndexRoute
 }
@@ -284,6 +291,7 @@ export interface FileRoutesByTo {
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/warehouses/$warehouseId': typeof WarehousesWarehouseIdRoute
+  '/warehouses/transfers': typeof WarehousesTransfersRoute
   '/leads': typeof LeadsIndexRoute
   '/warehouses': typeof WarehousesIndexRoute
 }
@@ -321,6 +329,7 @@ export interface FileRoutesById {
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/warehouses/$warehouseId': typeof WarehousesWarehouseIdRoute
+  '/warehouses/transfers': typeof WarehousesTransfersRoute
   '/leads/': typeof LeadsIndexRoute
   '/warehouses/': typeof WarehousesIndexRoute
 }
@@ -359,6 +368,7 @@ export interface FileRouteTypes {
     | '/sales-orders/$orderId'
     | '/tickets/$ticketId'
     | '/warehouses/$warehouseId'
+    | '/warehouses/transfers'
     | '/leads/'
     | '/warehouses/'
   fileRoutesByTo: FileRoutesByTo
@@ -395,6 +405,7 @@ export interface FileRouteTypes {
     | '/sales-orders/$orderId'
     | '/tickets/$ticketId'
     | '/warehouses/$warehouseId'
+    | '/warehouses/transfers'
     | '/leads'
     | '/warehouses'
   id:
@@ -431,6 +442,7 @@ export interface FileRouteTypes {
     | '/sales-orders/$orderId'
     | '/tickets/$ticketId'
     | '/warehouses/$warehouseId'
+    | '/warehouses/transfers'
     | '/leads/'
     | '/warehouses/'
   fileRoutesById: FileRoutesById
@@ -463,6 +475,7 @@ export interface RootRouteChildren {
   LeadsLeadIdRoute: typeof LeadsLeadIdRoute
   LeadsCreateRoute: typeof LeadsCreateRoute
   WarehousesWarehouseIdRoute: typeof WarehousesWarehouseIdRoute
+  WarehousesTransfersRoute: typeof WarehousesTransfersRoute
   LeadsIndexRoute: typeof LeadsIndexRoute
   WarehousesIndexRoute: typeof WarehousesIndexRoute
 }
@@ -628,6 +641,13 @@ declare module '@tanstack/react-router' {
       path: '/leads'
       fullPath: '/leads/'
       preLoaderRoute: typeof LeadsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/warehouses/transfers': {
+      id: '/warehouses/transfers'
+      path: '/warehouses/transfers'
+      fullPath: '/warehouses/transfers'
+      preLoaderRoute: typeof WarehousesTransfersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/warehouses/$warehouseId': {
@@ -796,6 +816,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeadsLeadIdRoute: LeadsLeadIdRoute,
   LeadsCreateRoute: LeadsCreateRoute,
   WarehousesWarehouseIdRoute: WarehousesWarehouseIdRoute,
+  WarehousesTransfersRoute: WarehousesTransfersRoute,
   LeadsIndexRoute: LeadsIndexRoute,
   WarehousesIndexRoute: WarehousesIndexRoute,
 }
