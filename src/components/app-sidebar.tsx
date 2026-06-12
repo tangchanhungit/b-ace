@@ -33,6 +33,12 @@ const INVENTORY: Item[] = [
   { title: "Prototype kho", url: "/warehouse-prototype", icon: ShieldCheck },
 ];
 
+const WAREHOUSE_MGMT: Item[] = [
+  { title: "Danh sách kho", url: "/warehouses", icon: WarehouseIcon },
+  { title: "Dashboard kho", url: "/warehouses/dashboard", icon: LayoutDashboard },
+  { title: "Chuyển kho", url: "/warehouses/transfers", icon: ArrowLeftRight },
+];
+
 const SUPPORT: Item[] = [
   { title: "Tickets", url: "/tickets", icon: Ticket },
   { title: "Activities", url: "/activities", icon: Activity },
