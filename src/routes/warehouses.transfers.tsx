@@ -118,11 +118,11 @@ function NewTransferDialog({
   onClose, warehouses, data, onCreate,
 }: {
   onClose: () => void;
-  warehouses: ReturnType<typeof useWarehouseStore<{ warehouses: ReturnType<typeof useWarehouseStore<any>>["warehouses"] }>>["warehouses"] extends infer T ? any : never;
-  data: any;
-  onCreate: (p: any) => void;
+  warehouses: { id: string; name: string }[];
+  data: Record<string, { stock: { sku: string; name: string; lot: string; qty: number }[] }>;
+  onCreate: (p: { fromWarehouseId: string; toWarehouseId: string; sku: string; name: string; lot: string; qty: number; reason: string; requestedBy: string }) => void;
 }) {
-  const wh = warehouses as { id: string; name: string }[];
+  const wh = warehouses;
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [lotKey, setLotKey] = useState("");
