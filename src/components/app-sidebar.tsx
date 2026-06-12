@@ -100,6 +100,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         {renderGroup("Sales", SALES)}
+        {renderGroup("Warehouse Management", WAREHOUSE_MGMT)}
         {renderGroup("Inventory", INVENTORY)}
         {renderGroup("Support", SUPPORT)}
         {renderGroup("Management", MANAGEMENT)}
