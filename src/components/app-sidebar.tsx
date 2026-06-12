@@ -4,6 +4,7 @@ import {
   PackagePlus, Warehouse, PackageMinus, ClipboardList,
   Ticket, Activity, CalendarClock, Workflow, HelpCircle, ShieldCheck,
   Calendar, ListTodo, FolderKanban, BarChart3, UsersRound, FileBox,
+  Warehouse as WarehouseIcon, ArrowLeftRight, LayoutDashboard,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -30,6 +31,12 @@ const INVENTORY: Item[] = [
   { title: "Outbound", url: "/inventory/outbound", icon: PackageMinus },
   { title: "Quy trình kho", url: "/quy-trinh-quan-ly-kho", icon: ClipboardList },
   { title: "Prototype kho", url: "/warehouse-prototype", icon: ShieldCheck },
+];
+
+const WAREHOUSE_MGMT: Item[] = [
+  { title: "Danh sách kho", url: "/warehouses", icon: WarehouseIcon },
+  { title: "Dashboard kho", url: "/warehouses/dashboard", icon: LayoutDashboard },
+  { title: "Chuyển kho", url: "/warehouses/transfers", icon: ArrowLeftRight },
 ];
 
 const SUPPORT: Item[] = [
@@ -93,6 +100,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         {renderGroup("Sales", SALES)}
+        {renderGroup("Warehouse Management", WAREHOUSE_MGMT)}
         {renderGroup("Inventory", INVENTORY)}
         {renderGroup("Support", SUPPORT)}
         {renderGroup("Management", MANAGEMENT)}
