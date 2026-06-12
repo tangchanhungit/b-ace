@@ -33,6 +33,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WarehousesIndexRouteImport } from './routes/warehouses.index'
 import { Route as LeadsIndexRouteImport } from './routes/leads.index'
 import { Route as WarehousesTransfersRouteImport } from './routes/warehouses.transfers'
+import { Route as WarehousesDashboardRouteImport } from './routes/warehouses.dashboard'
 import { Route as WarehousesWarehouseIdRouteImport } from './routes/warehouses.$warehouseId'
 import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
 import { Route as SalesOrdersOrderIdRouteImport } from './routes/sales-orders.$orderId'
@@ -165,6 +166,11 @@ const WarehousesTransfersRoute = WarehousesTransfersRouteImport.update({
   path: '/warehouses/transfers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WarehousesDashboardRoute = WarehousesDashboardRouteImport.update({
+  id: '/warehouses/dashboard',
+  path: '/warehouses/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WarehousesWarehouseIdRoute = WarehousesWarehouseIdRouteImport.update({
   id: '/warehouses/$warehouseId',
   path: '/warehouses/$warehouseId',
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/warehouses/$warehouseId': typeof WarehousesWarehouseIdRoute
+  '/warehouses/dashboard': typeof WarehousesDashboardRoute
   '/warehouses/transfers': typeof WarehousesTransfersRoute
   '/leads/': typeof LeadsIndexRoute
   '/warehouses/': typeof WarehousesIndexRoute
@@ -291,6 +298,7 @@ export interface FileRoutesByTo {
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/warehouses/$warehouseId': typeof WarehousesWarehouseIdRoute
+  '/warehouses/dashboard': typeof WarehousesDashboardRoute
   '/warehouses/transfers': typeof WarehousesTransfersRoute
   '/leads': typeof LeadsIndexRoute
   '/warehouses': typeof WarehousesIndexRoute
@@ -329,6 +337,7 @@ export interface FileRoutesById {
   '/sales-orders/$orderId': typeof SalesOrdersOrderIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/warehouses/$warehouseId': typeof WarehousesWarehouseIdRoute
+  '/warehouses/dashboard': typeof WarehousesDashboardRoute
   '/warehouses/transfers': typeof WarehousesTransfersRoute
   '/leads/': typeof LeadsIndexRoute
   '/warehouses/': typeof WarehousesIndexRoute
@@ -368,6 +377,7 @@ export interface FileRouteTypes {
     | '/sales-orders/$orderId'
     | '/tickets/$ticketId'
     | '/warehouses/$warehouseId'
+    | '/warehouses/dashboard'
     | '/warehouses/transfers'
     | '/leads/'
     | '/warehouses/'
@@ -405,6 +415,7 @@ export interface FileRouteTypes {
     | '/sales-orders/$orderId'
     | '/tickets/$ticketId'
     | '/warehouses/$warehouseId'
+    | '/warehouses/dashboard'
     | '/warehouses/transfers'
     | '/leads'
     | '/warehouses'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/sales-orders/$orderId'
     | '/tickets/$ticketId'
     | '/warehouses/$warehouseId'
+    | '/warehouses/dashboard'
     | '/warehouses/transfers'
     | '/leads/'
     | '/warehouses/'
@@ -475,6 +487,7 @@ export interface RootRouteChildren {
   LeadsLeadIdRoute: typeof LeadsLeadIdRoute
   LeadsCreateRoute: typeof LeadsCreateRoute
   WarehousesWarehouseIdRoute: typeof WarehousesWarehouseIdRoute
+  WarehousesDashboardRoute: typeof WarehousesDashboardRoute
   WarehousesTransfersRoute: typeof WarehousesTransfersRoute
   LeadsIndexRoute: typeof LeadsIndexRoute
   WarehousesIndexRoute: typeof WarehousesIndexRoute
@@ -650,6 +663,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WarehousesTransfersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/warehouses/dashboard': {
+      id: '/warehouses/dashboard'
+      path: '/warehouses/dashboard'
+      fullPath: '/warehouses/dashboard'
+      preLoaderRoute: typeof WarehousesDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/warehouses/$warehouseId': {
       id: '/warehouses/$warehouseId'
       path: '/warehouses/$warehouseId'
@@ -816,6 +836,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeadsLeadIdRoute: LeadsLeadIdRoute,
   LeadsCreateRoute: LeadsCreateRoute,
   WarehousesWarehouseIdRoute: WarehousesWarehouseIdRoute,
+  WarehousesDashboardRoute: WarehousesDashboardRoute,
   WarehousesTransfersRoute: WarehousesTransfersRoute,
   LeadsIndexRoute: LeadsIndexRoute,
   WarehousesIndexRoute: WarehousesIndexRoute,
