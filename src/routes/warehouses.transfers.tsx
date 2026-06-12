@@ -170,7 +170,7 @@ function NewTransferDialog({
             <Select value={lotKey} onValueChange={setLotKey} disabled={!from}>
               <SelectTrigger><SelectValue placeholder={from ? "Chọn lô từ kho nguồn" : "Chọn kho nguồn trước"} /></SelectTrigger>
               <SelectContent>
-                {fromStock.filter((s: any) => s.qty > 0).map((s: any) => (
+                {fromStock.filter((s) => s.qty > 0).map((s) => (
                   <SelectItem key={s.sku + s.lot} value={`${s.sku}|${s.lot}`}>{s.name} · {s.lot} · còn {s.qty}</SelectItem>
                 ))}
               </SelectContent>
