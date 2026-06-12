@@ -136,7 +136,7 @@ function NewTransferDialog({
       toast.error("Vui lòng chọn 2 kho khác nhau, lô và số lượng"); return;
     }
     const [sku, lot] = lotKey.split("|");
-    const s = fromStock.find((x: any) => x.sku === sku && x.lot === lot);
+    const s = fromStock.find((x) => x.sku === sku && x.lot === lot);
     if (!s) return;
     if (qty > s.qty) { toast.error(`Vượt tồn (còn ${s.qty})`); return; }
     onCreate({
