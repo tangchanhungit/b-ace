@@ -4,6 +4,7 @@ import {
   PackagePlus, Warehouse, PackageMinus, ClipboardList,
   Ticket, Activity, CalendarClock, Workflow, HelpCircle, ShieldCheck,
   Calendar, ListTodo, FolderKanban, BarChart3, UsersRound, FileBox,
+  Warehouse as WarehouseIcon, ArrowLeftRight, LayoutDashboard,
   type LucideIcon,
 } from "lucide-react";
 import {
